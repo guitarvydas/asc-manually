@@ -26,7 +26,7 @@ BRACES2FB {
 
       /* low-level */
       color = rgbaColor | constantColor
-      rgbaColor = rgba
+      rgbaColor = rgba ws*
       constantColor = ("green" | "yellow" | "red") ws*
 
 
@@ -40,7 +40,7 @@ BRACES2FB {
 
       number = dig+
       dig = "0" .. "9"
-      rgba = hex hex hex hex ws*
+      rgba = hex hex hex hex
       hex = hd hd
       hd = dig | (~keyword "A" .. "F")
 

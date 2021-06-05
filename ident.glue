@@ -1,8 +1,8 @@
   qid [id @ws] = [[${id}${ws}]]
 
     color [color] = [[${color}]]
-    rgbaColor [rgba] = [[${rgba}]]
-    constancColor [k] = [[${k}]]
+    rgbaColor [rgba @ws] = [[${rgba}${ws}]]
+    constantColor [k @ws] = [[${k}${ws}]]
 
       qualified_ident [name @path] = [[${name}${path}]]
       path [k id] = [[${k}${id}]]
