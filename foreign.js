@@ -16,6 +16,12 @@ function newObject () {
     let name = scopeGet ('name');
     let newID = name + "_" + gen ();
     scopeAdd ('object', newID);
+    scopeAdd ('container', newID);
+}
+
+function pushContainer () {
+    let obj = scopeGet ('object');
+    scopeAdd ('container', obj);
 }
 
 function resetBlock () {

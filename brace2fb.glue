@@ -1,29 +1,40 @@
   topRect [@ws1 lb @ws2 k @ws3 id @ws4 @nested rb @ws5] =
     {{ 
-      initialize ("object");
+      initialize (_id._glue ());
       newObject ();
     }}
-    
-    [[${ws1}${lb}${ws2}${k}${ws3}${id}${ws4}${nested}${rb}${ws5}]]
+    [[
+    FACT root ${id}
+    FACT rect ${scopeGet ('object')} ${id}
+    ${nested}
+    ]]
   
   object [obj] =
-    {{ 
+    {{
+      pushContainer ();
       newObject ();
     }}
-    [[${obj}]]
+    [[FACT contains ${scopeGet ('container')} ${scopeGet ('object')}\n${obj}]]
 
-  rect [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
-  circle [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
-  text [k @ws1 id @ws2 str] = [[${k}${ws1}${id}${ws2}${str}]]
-  connector [k @ws id sender receiver] = [[${k}${ws}${id}${sender}${receiver}]]
+  rect [k @ws1 id @ws2 @nested] = [[FACT rect ${scopeGet ('object')} ${id}\n${nested}]]
+  circle [k @ws1 id @ws2 @nested] = [[FACT circle  ${scopeGet ('object')} ${id}\n${nested}]]
+  text [k @ws1 id @ws2 str] =
+    [[FACT text ${scopeGet ('object')} ${id}
+      FACT str ${id} ${str}
+      ]]
+  connector [k @ws id sender receiver] =
+    [[FACT connector ${scopeGet ('object')} ${id}
+      FACT sender ${id} ${sender}
+      FACT receiver ${id} ${receiver}
+      ]]
 
-  nested [lb @ws1 @oa rb @ws2] = [[${lb}${ws1}${oa}${rb}${ws2}]]
+  nested [lb @ws1 @oa rb @ws2] = [[${oa}]]
 
   objectOrAttribute [oa] = [[${oa}]]
 
   attribute [a] = [[${a}]]
 
-  colorAttribute [k @ws color] = [[${k}${ws}${color}]]
+  colorAttribute [k @ws color] = [[FACT color ${scopeGet ('object')} ${color}\n]]
   
   sender [id] = [[${id}]]
   receiver  [id] = [[${id}]]

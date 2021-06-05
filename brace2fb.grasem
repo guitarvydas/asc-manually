@@ -30,9 +30,11 @@ BRACES2FB {
       constantColor = ("green" | "yellow" | "red") ws*
 
 
-      qualified_ident = name path*
-      path = "/" (dig| absolute_ident)
-      name = "." | absolute_ident
+      qualified_ident = root path+ basename
+      path = absolute_ident "/"
+      numeric_name = dig+ 
+      basename = absolute_ident | numeric_name
+      root = "./"
 
       absolute_ident = ~kwOrDelim absolute_ident_first_char absolute_ident_more_char* 
       absolute_ident_first_char = "a" .. "z"
@@ -55,6 +57,7 @@ BRACES2FB {
       kwOrDelim = delimiter | keyword
 
 }
+
 
 include(`brace2fb.glue')
 include(`ident.glue')
