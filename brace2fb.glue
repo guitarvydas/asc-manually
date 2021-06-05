@@ -8,7 +8,7 @@
   text [k @ws1 id @ws2 str] = [[${k}${ws1}${id}${ws2}${str}]]
   connector [k @ws id sender receiver] = [[${k}${ws}${id}${sender}${receiver}]]
 
-  nested [lb @ws1 oa rb @ws2] = [[${lb}${ws1}${oa}${rb}${ws2}]]
+  nested [lb @ws1 @oa rb @ws2] = [[${lb}${ws1}${oa}${rb}${ws2}]]
 
   objectOrAttribute [oa] = [[${oa}]]
 

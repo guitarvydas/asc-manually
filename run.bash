@@ -20,4 +20,5 @@ cat foreign.js _.js >_brace2fb.js
 
 node _md2block.js < $target.md > _.block
 node _block2brace.js < _.block > _.brace
-node _brace2fb.js < _.brace > ${target}.fb
+node _brace2fb.js < _.brace
+#node _brace2fb.js < _.brace > ${target}.fb
