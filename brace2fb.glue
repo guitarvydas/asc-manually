@@ -1,0 +1,20 @@
+  topRect [@ws1 lb @ws2 k @ws3 id @ws4 @nested rb @ws5] =
+    [[${ws1}${lb}${ws2}${k}${ws3}${id}${ws4}${nested}${rb}${ws5}]]
+  
+  object [obj] = [[${obj}]]
+
+  rect [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
+  circle [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
+  text [k @ws1 id @ws2 str] = [[${k}${ws1}${id}${ws2}${str}]]
+  connector [k @ws id sender receiver] = [[${k}${ws}${id}${sender}${receiver}]]
+
+  nested [lb @ws1 oa rb @ws2] = [[${lb}${ws1}${oa}${rb}${ws2}]]
+
+  objectOrAttribute [oa] = [[${oa}]]
+
+  attribute [a] = [[${a}]]
+
+  colorAttribute [k @ws color] = [[${k}${ws}${color}]]
+  
+  sender [id] = [[${id}]]
+  receiver  [id] = [[${id}]]
