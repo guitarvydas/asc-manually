@@ -1,9 +1,9 @@
 # rect app
-## text "app"
+## text ./m/t1 "app"
 ## circle ./i/in
 ### color green
 ## rect ./c/layer1
-### text t1 "./c/layer1"
+### text ./layer1/m/t2 "./c/layer1"
 ### circle ./c/layer1/i/a
 ### color green
 ### circle ./c/layer1/o/b

@@ -1,48 +1,41 @@
 BRACES2FB {
-  topLevel = ws+ tBEGIN toprect tEND
+  topRect = ws* "{" ws* "rect" ws* absolute_ident ws* nested+ "}" ws*
+  
+  object = rect | circle | text | connector
+
+  rect = "rect" ws* qid ws* nested?
+  circle = "circle" ws* qid ws* nested?
+  text = "text" ws* qid ws* string
+  connector = "connector" ws* qid sender receiver
+
+  nested = "{" ws* objectOrAttribute+ "}" ws*
+
+  objectOrAttribute = (object | attribute) ws*
+
+  attribute = (colorAttribute)
+
+  colorAttribute = "color" ws* color
+  
+  sender = qid
+  receiver = qid
+
+  qid = qualified_ident ws*
 
 
-  nestedAttributesOrObjects = tBEGIN attributeOrObject+ tEND
-  attributeOrObject = attribute | object
 
-  object = rect | ellipse | circle | arrow | text
-  toprect = tRECT synonym nestedAttributesOrObjects? ws*
-  rect = tRECT synonym nestedAttributesOrObjects? ws*
-  circle = tCIRCLE synonym nestedAttributesOrObjects? ws*
-  ellipse = tELLIPSE synonym nestedAttributesOrObjects? ws*
-  text = tTEXT string ws*
-  arrow = tARROW sender ws* receiver ws*
-
-  attribute = shapeAttribute | colorAttribute | strokeWidthAttribute
-  shapeAttribute = "shape" ws* "rounded" ws*
-  colorAttribute = "color" ws* color ws*
-  strokeWidthAttribute = "stroke-width" ws* number ws*
-
-  sender = qualident
-  receiver = qualident
-
-  synonym = qualident ws*
-
-    /* mid-level */
-    tRECT = "rect" ws*
-    tCIRCLE = "circle" ws*
-    tELLIPSE = "ellipse" ws*
-    tARROW = "arrow" ws*
-    tTEXT = "text" ws*
-
-    tBEGIN = "{" ws*
-    tEND = "}" ws*
 
       /* low-level */
       color = rgba | "green" | "yellow" | "red"
 
       keyword = color
 
-      flat_ident = ~keyword flat_ident_first_char flat_ident_more_char* 
-      flat_ident_first_char = "a" .. "z"
-      flat_ident_more_char = flat_ident_first_char | dig
-      qualident = qualident_recursive | flat_ident
-      qualident_recursive = flat_ident "/" qualident
+      qualified_ident = name path*
+      path = "/" (dig| absolute_ident)
+      name = "." | absolute_ident
+
+      absolute_ident = ~keyword absolute_ident_first_char absolute_ident_more_char* 
+      absolute_ident_first_char = "a" .. "z"
+      absolute_ident_more_char = absolute_ident_first_char | dig
 
       number = dig+
       dig = "0" .. "9"
@@ -52,63 +45,9 @@ BRACES2FB {
 
       string = dq notDQ* dq
       dq = "\""
-      notDQ = ~dq any
+      notDQ = ~dq ~newline any
       ws = " " | "\t" | newline
       newline = "\n"
+
 }
 
-  topLevel [@ws begin topr end] = [[${topr}]]
-
-
-  nestedAttributesOrObjects [begin @aorobj end] = [[${begin}${aorobj}${end}]]
-  attributeOrObject [aorobj] = [[${aorobj}]]
-
-  object [obj] = {{ pushNewObject (); }} [[contains ${parent ()} ${id ()}\n${obj}]]
-  toprect [rect syn @nested @ws] = {{ initialize (_syn._glue ()); }} [[rect ${id ()} nil\nsynonym ${id ()} ${syn}\n${nested}]]
-  rect [rect syn @nested @ws] = [[rect ${id ()}  nil\nsynonym ${id ()} ${syn}\n${nested}]]
-  circle [circle syn @nested @ws] = [[circle ${id ()} nil\nsynonym ${id ()} ${syn}\n${nested}]]
-  ellipse [ellipse syn @nested @ws] = [[ellipse ${id ()} nil\nsynonym ${id ()} ${syn}\n${nested}]]
-  text [text str @ws] = [[text ${id ()} nil\nstr ${id ()} ${str}\n]]
-  arrow [arrow sender @ws1 receiver @ws2] = [[arrow ${arrowid ()} nil\nsendersynonym ${arrowid ()} ${sender}\nreceiversynonym ${arrowid ()} ${receiver}\n]]
-
-  attribute [attr] = [[${attr}]]
-  shapeAttribute [shape @ws1 rounded @ws2] = [[rounded ${id ()} nil\n]]
-  colorAttribute [k @ws1 color @ws2] = [[color ${id ()} ${color}\n]]
-  strokeWidthAttribute [sw @ws1 n @ws2] = [[strokeWidth ${id ()} ${n}\n]]
-
-  sender [ident] = [[${ident}]]
-  receiver [ident] = [[${ident}]]
-
-  synonym [ident @ws] = [[${ident}]]
-
-    tRECT [t @ws] = [[]]
-    tCIRCLE [t @ws] = [[]]
-    tELLIPSE [t @ws] = [[]]
-    tARROW [t @ws] = [[]]
-    tTEXT [t @ws] = [[]]
-
-    tBEGIN [t @ws] = [[]]
-    tEND [t @ws] = [[]]
-
-      color [cl] = [[${cl}]]
-
-      keyword [kw] = [[${kw}]]
-
-      flat_ident [c @cs] = [[${c}${cs}]]
-      flat_ident_first_char [c] = [[${c}]]
-      flat_ident_more_char [c] = [[${c}]]
-      qualident [ident] = [[${editSlashes (ident)}]]
-      qualident_recursive [flatident slash recursiveident] = [[${flatident}${slash}${recursiveident}]]
-
-      number [num] = [[${num}]]
-      dig [digit] = [[${digit}]]
-      rgba [h1 h2 h3 h4] = [[${h1}${h2}${h3}${h4}]]
-      hex [h1 h2] = [[${h1}${h2}]]
-      hd [c] = [[${c}]]
- 
-      string [q1 @cs q2] = [[${q1}${cs}${q2}]]
-      dq [c] = [[${c}]]
-      notDQ [c] = [[${c}]]
-
-      ws [c] = [[${c}]]
-      newline [c] = [[${c}]]
