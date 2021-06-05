@@ -1,7 +1,16 @@
   topRect [@ws1 lb @ws2 k @ws3 id @ws4 @nested rb @ws5] =
+    {{ 
+      initialize ("object");
+      newObject ();
+    }}
+    
     [[${ws1}${lb}${ws2}${k}${ws3}${id}${ws4}${nested}${rb}${ws5}]]
   
-  object [obj] = [[${obj}]]
+  object [obj] =
+    {{ 
+      newObject ();
+    }}
+    [[${obj}]]
 
   rect [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
   circle [k @ws1 id @ws2 @nested] = [[${k}${ws1}${id}${ws2}${nested}]]
