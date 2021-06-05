@@ -1,0 +1,17 @@
+MD2BLOCK {
+
+main = line+
+line = indent spc toEOL* newline+
+indent = "#"+
+toEOL = ~newline any
+
+newline = "\n"
+spc = " "
+}
+
+main [@lines] = {{ resetBlock (); }} [[${lines}]]
+line [block spc @chars @nl] = [[${block}: ${chars}\n]]
+indent [@octo] = [[${convertIndentationToBlockNumber (octo)}]]
+toEOL [c] = [[${c}]]
+newline [c] = [[${c}]] 
+spc [c] = [[${c}]]

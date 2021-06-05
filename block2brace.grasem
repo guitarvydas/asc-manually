@@ -1,0 +1,19 @@
+BLOCK2LISP {
+
+main = line+
+line = block ":" spc toEOL* newline+
+block = decimalDigit+
+decimalDigit = "0" .. "9"
+toEOL = ~newline any
+
+newline = "\n"
+spc = " "
+}
+
+main [@lines] = {{ resetBlock () }} [[${lines}${emitclosebrace (0)}]]
+line [block colon spc @chars @nl] = [[${emitopenbrace (block)}${emitclosebrace (block)}${spaces (block)}${chars}\n${shiftblock (block)}]]
+block [@digits] = [[${digits}]]
+decimalDigit [d] = [[${d}]]
+toEOL [c] = [[${c}]]
+newline [c] = [[${c}]] 
+spc [c] = [[${c}]]
