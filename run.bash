@@ -8,5 +8,6 @@ echo '*** building transpilers ***'
 
 ./md2fb.bash app
 ./md2fb.bash sub
+./md2fb.bash hello
 
-cat sub.fb
+cat hello.fb
