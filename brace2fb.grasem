@@ -56,4 +56,5 @@ BRACES2FB {
 
 }
 
+include(`ident.glue')
 include(`low-level.glue')

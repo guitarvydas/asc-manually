@@ -14,7 +14,7 @@ cat foreign.js _.js >_block2brace.js
 
 m4 <brace2fb.grasem >_.grasem
 ../grasem/run.bash _.grasem
-# ../grasem/run.bash _.grasem >_.js
+# ../grasem/run.bash .grasem >_.js
 # cat foreign.js _.js >_brace2fb.js
 
 
