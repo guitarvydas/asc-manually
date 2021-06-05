@@ -1,0 +1,12 @@
+      number [num] = [[${num}]]
+      dig [digit] = [[${digit}]]
+      rgba [h1 h2 h3 h4] = [[${h1}${h2}${h3}${h4}]]
+      hex [h1 h2] = [[${h1}${h2}]]
+      hd [c] = [[${c}]]
+ 
+      string [q1 @cs q2] = [[${q1}${cs}${q2}]]
+      dq [c] = [[${c}]]
+      notDQ [c] = [[${c}]]
+
+      ws [c] = [[${c}]]
+      newline [c] = [[${c}]]
