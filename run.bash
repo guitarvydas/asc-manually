@@ -1,5 +1,4 @@
 #!/bin/bash
-target=app
 set -e
 echo >_.pl
 
@@ -8,5 +7,6 @@ echo '*** building transpilers ***'
 ./build.bash
 
 ./md2fb.bash app
+./md2fb.bash sub
 
-cat ${target}.fb
+cat sub.fb
