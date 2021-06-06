@@ -30,13 +30,17 @@ BRACES2FB {
       constantColor = ("green" | "yellow" | "red") ws*
 
 
-      qualified_ident = root path+ basename
-      path = absolute_ident "/"
+      qualified_ident = componentRelativeName | rootRelativeName 
+      componentRelativeName = root componentNamespace componentPath namespace basename
+      rootRelativeName = root namespace basename
+      componentPath = absolute_ident "/"
       numeric_name = dig+ 
       basename = absolute_ident | numeric_name
+      namespace = ("i" | "o" | "c" | "x" |"n") "/"
+      componentNamespace = "c" "/"
       root = "./"
 
-      absolute_ident = ~kwOrDelim absolute_ident_first_char absolute_ident_more_char* 
+      absolute_ident = ~avoid absolute_ident_first_char absolute_ident_more_char* 
       absolute_ident_first_char = "a" .. "z"
       absolute_ident_more_char = absolute_ident_first_char | dig
 
@@ -52,11 +56,13 @@ BRACES2FB {
       ws = " " | "\t" | newline
       newline = "\n"
 
-      keyword = constantColor
+      keyword = constantColor | namespace
       delimiter = "." | "/" | dq | ws
-      kwOrDelim = delimiter | keyword
+      
+      avoid = delimiter | namespace | keyword
 
 }
+
 
 
 include(`brace2fb.glue')

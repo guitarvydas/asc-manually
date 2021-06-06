@@ -4,10 +4,16 @@
     rgbaColor [rgba @ws] = [[${rgba}${ws}]]
     constantColor [k @ws] = [[${k}${ws}]]
 
-      qualified_ident [root @path basename] = [[${root}${path}${basename}]]
-      path [k id] = [[${k}${id}]]
+      qualified_ident [n] = [[${n}]]
+      componentRelativeName [root cns cp subns base] = [[${root}${cns}${cp}${subns}${base}]]
+      rootRelativeName [root ns base] = [[${root}${ns}${base}]]
+      componentPath [name slash] = [[${name}${slash}]]
+
       numeric_name [@cs] = [[${cs}]]
       basename [id] = [[${id}]]
+      namespace [c slash] = [[${c}${slash}]]
+      componentNamespace [c slash] = [[${c}${slash}]]
+      root [k] = [[${k}]]
 
       absolute_ident [c @cs] = [[${c}${cs}]]
       absolute_ident_first_char [c] = [[${c}]]
