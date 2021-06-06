@@ -97,36 +97,25 @@ function spaces (n) {
     return s;
 }
 
-// function editSlashes (s) {
-//     return s.replace(/\//g,'_');
-// }
+function newName (_namespace, _componentPath, _componentNamespace, _basename) {
+    let namespace = _namespace._glue ();
+    let componentPath = "";
+    let componentNamespace = "";
+    let basename = _basename._glue ();
+    let newID = 'name'+ gen ();
+    if ("" !== _componentPath) {componentPath = _componentPath._glue () };
+    if ("" !== componentNamespace) { componentNamespace = _componentNamespace._glue () };
+    scopeAdd ('name', newID);
+    scopeAdd ('namespace', namespace);
+    scopeAdd ('componentPath', componentPath);
+    scopeAdd ('componentNamespace' , componentNamespace);
+    scopeAdd ('basename', basename);
+}
 
-// function pushNewObject () {
-//     let parent = scopeGet ('object');
-//     let prefix = scopeGet ('prefix');
-//     let newID = prefix + "_" + gen ();
-//     scopeAdd ('parent', parent);
-//     scopeAdd ('object', newID);
-// }
+function name () { return scopeGet ('name') ; }
+function componentPath () { return scopeGet ('componentPath') ; }
+function componentNamespace () { return scopeGet ('componentNamespace') ; }
+function namespace () { return scopeGet ('namespace') ; }
+function basename () { return scopeGet ('basename') ; }
 
-
-// function id () {
-//     return scopeGet ('object');
-// }
-
-// function parent () {
-//     return scopeGet ('parent');
-// }
-
-// function initialize (name) {
-//     scopeAdd ('prefix', name);
-//     scopeAdd ('counter', 0);
-//     let newID = name + "_" + gen ();
-//     scopeAdd ('parent', "id0");
-//     scopeAdd ('object', newID);
-// }
-
-// function arrowid () {
-//     return scopeGet ('object') + "_a";
-// }
-
+function emit (s) { console.log (s); }
