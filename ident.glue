@@ -1,0 +1,14 @@
+  qid [id @ws] = [[${id}${ws}]]
+
+    color [color] = [[${color}]]
+    rgbaColor [rgba @ws] = [[${rgba}${ws}]]
+    constantColor [k @ws] = [[${k}${ws}]]
+
+      qualified_ident [root @path basename] = [[${root}${path}${basename}]]
+      path [k id] = [[${k}${id}]]
+      numeric_name [@cs] = [[${cs}]]
+      basename [id] = [[${id}]]
+
+      absolute_ident [c @cs] = [[${c}${cs}]]
+      absolute_ident_first_char [c] = [[${c}]]
+      absolute_ident_more_char [c] = [[${c}]]

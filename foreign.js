@@ -1,6 +1,29 @@
 'use strict';
 // empty
 
+function initialize (name) {
+    scopeAdd ('name', name);
+    scopeAdd ('counter', 0);
+}
+
+function gen () {
+    var i = scopeGet ("counter");
+    scopeModify ("counter", i + 1);
+    return i.toString ();
+}
+
+function newObject () {
+    let name = scopeGet ('name');
+    let newID = name + "_" + gen ();
+    scopeAdd ('object', newID);
+    scopeAdd ('container', newID);
+}
+
+function pushContainer () {
+    let obj = scopeGet ('object');
+    scopeAdd ('container', obj);
+}
+
 function resetBlock () {
     scopeAdd ('block' , 0);
 }
@@ -101,12 +124,6 @@ function spaces (n) {
 //     let newID = name + "_" + gen ();
 //     scopeAdd ('parent', "id0");
 //     scopeAdd ('object', newID);
-// }
-
-// function gen () {
-//     var i = scopeGet ("counter");
-//     scopeModify ("counter", i + 1);
-//     return i.toString ();
 // }
 
 // function arrowid () {
