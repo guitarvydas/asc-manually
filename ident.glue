@@ -27,6 +27,7 @@
 
       numeric_name [@cs] = [[${cs}]]
       basename [id] = [["${id}"]]
+      aname [id] = [["${id}"]]
       namespace [c slash] = [[${c}]]
       componentNamespace [c slash] = [[${c}]]
       root [k] = [[${k}]]
