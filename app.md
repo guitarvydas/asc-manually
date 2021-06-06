@@ -3,7 +3,7 @@
 ## circle ./i/in
 ### color green
 ## rect ./c/layer1
-### text ./layer1/n/t2 "./c/layer1"
+### text ./c/layer1/n/t2 "./c/layer1"
 ### circle ./c/layer1/i/a
 ### color green
 ### circle ./c/layer1/o/b
