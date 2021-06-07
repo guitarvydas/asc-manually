@@ -7,7 +7,7 @@
 #### color green
 ### rect ./c/2/o/1
 #### color yellow
-### text ./c/2/t2 "object_hello/greet ()"
+### text ./c/2/n/t2 "object_hello/greet ()"
 ## circle ./i/1
 ### color green
 ## circle ./o/1

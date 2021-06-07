@@ -5,14 +5,31 @@
     constantColor [k @ws] = [[${k}${ws}]]
 
       qualified_ident [n] = [[${n}]]
-      componentRelativeName [root cns cp subns base] = [[${root}${cns}${cp}${subns}${base}]]
-      rootRelativeName [root ns base] = [[${root}${ns}${base}]]
-      componentPath [name slash] = [[${name}${slash}]]
+      componentRelativeName [root cns cp subns base] =
+        {{
+	  newName (_cns, _cp, _subns, _base);
+	  emit ("FACT " + name () + " name");
+	  emit ("FACT " + name () + " componentRelativeName");
+	  emit ("FACT " + name () + " componentPath " + componentPath ());
+	  emit ("FACT " + name () + " componentNamespace " + componentNamespace ());
+	  emit ("FACT " + name () + " basename " + basename ());
+        }}
+        [[${name ()}]]
+      rootRelativeName [root ns base] =
+        {{
+	  newName (_ns, "", "", _base);
+	  emit ("FACT " + name () + " name");
+	  emit ("FACT " + name () + " rootNamespace " + namespace ());
+	  emit ("FACT " + name () + " basename " + basename ());
+        }}
+        [[${name ()}]]
+      componentPath [name slash] = [[${name}]]
 
       numeric_name [@cs] = [[${cs}]]
       basename [id] = [[${id}]]
-      namespace [c slash] = [[${c}${slash}]]
-      componentNamespace [c slash] = [[${c}${slash}]]
+      aname [id] = [["${id}"]]
+      namespace [c slash] = [[${c}]]
+      componentNamespace [c slash] = [[${c}]]
       root [k] = [[${k}]]
 
       absolute_ident [c @cs] = [[${c}${cs}]]

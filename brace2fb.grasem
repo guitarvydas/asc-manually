@@ -33,9 +33,10 @@ BRACES2FB {
       qualified_ident = componentRelativeName | rootRelativeName 
       componentRelativeName = root componentNamespace componentPath namespace basename
       rootRelativeName = root namespace basename
-      componentPath = absolute_ident "/"
+      componentPath = aname "/"
       numeric_name = dig+ 
-      basename = absolute_ident | numeric_name
+      basename = aname
+      aname = absolute_ident | numeric_name
       namespace = ("i" | "o" | "c" | "x" |"n") "/"
       componentNamespace = "c" "/"
       root = "./"
