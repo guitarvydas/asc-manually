@@ -8,25 +8,25 @@
       componentRelativeName [root cns cp subns base] =
         {{
 	  newName (_cns, _cp, _subns, _base);
-	  emit ("FACT name " + name ());
-	  emit ("FACT componentRelativeName " + name ());
-	  emit ("FACT componentPath " + name () + " " + componentPath ());
-	  emit ("FACT componentNamespace " + name () + " " + componentNamespace ());
-	  emit ("FACT basename " + name () + " " + basename ());
+	  emit ("FACT " + name () + " name");
+	  emit ("FACT " + name () + " componentRelativeName");
+	  emit ("FACT " + name () + " componentPath " + componentPath ());
+	  emit ("FACT " + name () + " componentNamespace " + componentNamespace ());
+	  emit ("FACT " + name () + " basename " + basename ());
         }}
         [[${name ()}]]
       rootRelativeName [root ns base] =
         {{
 	  newName (_ns, "", "", _base);
-	  emit ("FACT name " + name ());
-	  emit ("FACT rootNamespace " + name () + " " + namespace ());
-	  emit ("FACT basename " + name () + " " + basename ());
+	  emit ("FACT " + name () + " name");
+	  emit ("FACT " + name () + " rootNamespace " + namespace ());
+	  emit ("FACT " + name () + " basename " + basename ());
         }}
         [[${name ()}]]
       componentPath [name slash] = [[${name}]]
 
       numeric_name [@cs] = [[${cs}]]
-      basename [id] = [["${id}"]]
+      basename [id] = [[${id}]]
       aname [id] = [["${id}"]]
       namespace [c slash] = [[${c}]]
       componentNamespace [c slash] = [[${c}]]

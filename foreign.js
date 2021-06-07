@@ -2,7 +2,7 @@
 // empty
 
 function initialize (name) {
-    scopeAdd ('name', name);
+    scopeAdd ('rootname', name);
     scopeAdd ('counter', 0);
 }
 
@@ -13,7 +13,7 @@ function gen () {
 }
 
 function newObject () {
-    let name = scopeGet ('name');
+    let name = scopeGet ('rootname');
     let newID = name + "_" + gen ();
     scopeAdd ('object', newID);
     scopeAdd ('container', newID);
@@ -102,9 +102,9 @@ function newName (_namespace, _componentPath, _componentNamespace, _basename) {
     let componentPath = "";
     let componentNamespace = "";
     let basename = _basename._glue ();
-    let newID = 'name'+ gen ();
+    let newID = scopeGet ('rootname') + "_" + gen ();
     if ("" !== _componentPath) {componentPath = _componentPath._glue () };
-    if ("" !== componentNamespace) { componentNamespace = _componentNamespace._glue () };
+    if ("" !== _componentNamespace) { componentNamespace = _componentNamespace._glue () };
     scopeAdd ('name', newID);
     scopeAdd ('namespace', namespace);
     scopeAdd ('componentPath', componentPath);

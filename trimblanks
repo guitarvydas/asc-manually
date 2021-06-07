@@ -1,0 +1,3 @@
+#!/bin/bash
+sed -E -e 's/^[[:blank:]]*FACT +/FACT /g'
+
