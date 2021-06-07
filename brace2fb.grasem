@@ -30,20 +30,20 @@ BRACES2FB {
       constantColor = ("green" | "yellow" | "red") ws*
 
 
-      qualified_ident = componentRelativeName | rootRelativeName 
-      componentRelativeName = root componentNamespace componentPath namespace basename
-      rootRelativeName = root namespace basename
-      componentPath = aname "/"
-      numeric_name = dig+ 
-      basename = aname
-      aname = absolute_ident | numeric_name
-      namespace = ("i" | "o" | "c" | "x" |"n") "/"
-      componentNamespace = "c" "/"
-      root = "./"
+      qualified_ident = qualified_ident_root | qualified_ident_other_component
+      qualified_ident_root= root "/" namespace ":" name ~"/"
+      qualified_ident_other_component = root componentRef "/" namespace ":" name
+      root = "."
+      componentRef = "/c:" name
+      namespace = ("i" | "o" | "c" | "x" | "n") &":"
+      rootabbreviation = "."
+      name = (absolute_ident | dig)
 
       absolute_ident = ~avoid absolute_ident_first_char absolute_ident_more_char* 
       absolute_ident_first_char = "a" .. "z"
       absolute_ident_more_char = absolute_ident_first_char | dig
+
+
 
       number = dig+
       dig = "0" .. "9"
