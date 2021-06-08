@@ -6,8 +6,19 @@
 
 
       qualified_ident [qname] = [[${qname}]]
-      qualified_ident_root [root slash ns colon] = [[${root}${slash}${ns}${colon}]]
-      qualified_ident_other_component [root cref slash ns colon] = [[${root}${cref}${slash}${ns}${colon}]]
+
+      qualified_ident_root [root slash ns colon basename] =
+        {{
+	  newRootRelativeName (_ns, _basename);
+        }}
+        [[${name ()}]]
+
+      qualified_ident_other_component [root cref slash ns colon basename] =
+        {{
+	  newComponentRelativeName (_cref, _ns, _basename);
+        }}
+        [[${name ()}]]
+
       root [c] = [[${c}]]
       componentRef [k name] = [[${k}${name}]]
       namespace [c la_colon] = [[${c}]]

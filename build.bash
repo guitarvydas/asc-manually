@@ -1,4 +1,12 @@
 #!/bin/bash
+set -e
+trap 'catch' ERR
+
+catch () {
+    echo '*** fatal error in build.bash'
+    exit 1
+}
+
 ../grasem/run.bash md2block.grasem >_.js
 cat foreign.js _.js >_md2block.js
 
