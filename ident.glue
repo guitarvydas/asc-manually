@@ -20,7 +20,7 @@
         [[${name ()}]]
 
       root [c] = [[${c}]]
-      componentRef [k name] = [[${k}${name}]]
+      componentRef [k name] = [[${name}]]
       namespace [c la_colon] = [[${c}]]
       rootabbreviation [c] = [[${c}]]
       name [n] = [[${n}]]

@@ -1,2 +1,2 @@
 # rect app
-## text ./c:sub/n:t1 "app"
+## text ./c:abc/n:xyz "app"

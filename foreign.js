@@ -102,6 +102,7 @@ function newRootRelativeName (_namespace, _basename) {
     let basename = _basename._glue ();
     let nsdID = newNSD ("root", namespace);
     let nameID = newName(nsdID, basename);
+    scopeAdd ('name', nameID);
 }
 
 function newComponentRelativeName (_componentName, _namespace, _basename) {
@@ -110,9 +111,10 @@ function newComponentRelativeName (_componentName, _namespace, _basename) {
     let namespace = _namespace._glue ();
 
     let nsdID = newNSD ("root", "c", componentName);
-    let nameID = newName (nsdID, basename);
+    let nameID = newName (nsdID, componentName);
     let nsdID2 = newNSD (nameID, namespace);
     let nameID2 = newName (nsdID2, basename);
+    scopeAdd ('name', nameID2);
 
     return nameID2;
 }
@@ -123,16 +125,15 @@ function newComponentRelativeName (_componentName, _namespace, _basename) {
 function newName (nsdID, basename) {	
     let id = newNameDescriptorID ();
     emitFact (`${id} name`);
-    emitFact (`${id} namestr ${basename}`);
+    emitFact (`${id} namestr "${basename}"`);
     emitFact (`${id} namespace ${nsdID}`);
-    scopeAdd ('name', id);
     return id;
 }
 
 function newNSD (component, namespace) {
     let id = newNamespaceDescriptorID ();
     emitFact (`${id} namespacedescriptor`);
-    emitFact (`${id} namespace ${namespace}`);
+    emitFact (`${id} ns ${namespace}`);
     emitFact (`${id} component ${component}`);
     return id;
 }

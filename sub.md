@@ -1,5 +1,5 @@
 # rect sub
-## text ./c:sub/n/t1 "sub"
+## text ./c:sub/n:t1 "sub"
 ## circle ./i:x
 ### color green
 ## rect ./c:hello
@@ -10,5 +10,5 @@
 ### color yellow
 ## circle ./o:y
 ### color yellow
-## connector ./x:1 ./i/x ./c:hello/i:r
+## connector ./x:1 ./i:x ./c:hello/i:r
 ## connector ./x:2 ./c:hello/o:s ./o:y

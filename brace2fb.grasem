@@ -1,12 +1,13 @@
 BRACES2FB {
   topRect = ws* "{" ws* "rect" ws* absolute_ident ws* nested+ "}" ws*
   
-  object = rect | circle | text | connector
+  object = rect | circle | text | connector | ignore
 
   rect = "rect" ws* qid ws* nested?
   circle = "circle" ws* qid ws* nested?
   text = "text" ws* qid ws* string
   connector = "connector" ws* qid sender receiver
+  ignore = "ignore" ws* qid
 
   nested = "{" ws* objectOrAttribute+ "}" ws*
 
