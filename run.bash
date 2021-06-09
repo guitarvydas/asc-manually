@@ -19,9 +19,11 @@ echo '*** transpiling md files ***'
 # ./md2fb.bash sub
 # ./md2fb.bash hello
 
-# dev
-node _md2block.js < test.md > _.block
-node _block2brace.js < _.block > _.brace
-node _brace2fb.js < _.brace | ./trimfacts > test.fb
-cat test.fb
+# # dev
+# node _md2block.js < test.md > _.block
+# node _block2brace.js < _.block > _.brace
+# node _brace2fb.js < _.brace | ./trimfacts > test.fb
+
+./md2fb.bash test3b
+cat test3b.fb
 

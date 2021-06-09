@@ -1,5 +1,5 @@
 # rect hello
-## text ./n/t1 "hello"
+## text ./n:t1 "hello"
 ## rect ./c:1
 ### text ./c:hello/n:t1 "object_hello\nb/greet < >(string)"
 ## rect ./c:2

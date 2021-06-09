@@ -20,12 +20,16 @@
   circle [k @ws1 id @ws2 @nested] = [[FACT ${scopeGet ('object')} circle ${id}\n${nested}]]
   text [k @ws1 id @ws2 str] =
     [[FACT ${scopeGet ('object')} text ${id}
-      FACT ${id} str ${str}
+      FACT ${scopeGet ('object')} str ${str}
       ]]
   connector [k @ws id sender receiver] =
     [[FACT ${scopeGet ('object')} connector ${id}
-      FACT ${id} sender ${sender}
-      FACT ${id} receiver ${receiver}
+      FACT ${scopeGet ('object')} sender ${sender}
+      FACT ${scopeGet ('object')} receiver ${receiver}
+      ]]
+
+  ignore [k @ws id] =
+    [[FACT ${scopeGet ('object')} ignore ${id}
       ]]
 
   nested [lb @ws1 @oa rb @ws2] = [[${oa}]]
