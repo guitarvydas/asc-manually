@@ -24,6 +24,8 @@ echo '*** transpiling md files ***'
 # node _block2brace.js < _.block > _.brace
 # node _brace2fb.js < _.brace | ./trimfacts > test.fb
 
-./md2fb.bash test3b
-cat test3b.fb
+./md2fb.bash test3a
+awk -f ind1.awk <test3a.fb >m0.fb
+awk -f fb2pl.awk <m0.fb >m0.pl
+cat m0.pl
 

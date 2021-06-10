@@ -124,7 +124,7 @@ function newComponentRelativeName (_componentName, _namespace, _basename) {
 
 function newName (nsdID, basename) {	
     let id = newNameDescriptorID ();
-    emitFact (`${id} name`);
+    emitFact (`${id} name nil`);
     emitFact (`${id} namestr "${basename}"`);
     emitFact (`${id} namespace ${nsdID}`);
     return id;
@@ -132,7 +132,7 @@ function newName (nsdID, basename) {
 
 function newNSD (component, namespace) {
     let id = newNamespaceDescriptorID ();
-    emitFact (`${id} namespacedescriptor`);
+    emitFact (`${id} namespacedescriptor nil`);
     emitFact (`${id} ns ${namespace}`);
     emitFact (`${id} component ${component}`);
     return id;
