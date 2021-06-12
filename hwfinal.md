@@ -1,0 +1,22 @@
+# rect app
+## circle ./i/in
+### color green
+## circle ./o/out
+### color yellow
+## rect ./c/hwsub
+### circle ./c/hwsub/i/xx
+#### color green
+### circle ./c/hwsub/i/yy
+#### color yellow
+### rect ./c/hwsub/c/hwhello
+#### circle ./c/hwsub/c/hwhello/i/1
+##### color green
+#### circle ./c/hwsub/c/hwhello/o/1
+##### color yellow
+#### rect ./c/hwsub/c/hwhello/c/1
+##### color red
+##### text ./c/hwsub/c/hwhello/c/1/n/text1 "greet"
+##### circle ./c/hwsub/c/hwhello/c/1/i/1
+###### color green
+##### circle ./c/hwsub/c/hwhello/c/1/o/1
+###### color yellow

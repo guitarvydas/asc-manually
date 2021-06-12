@@ -16,9 +16,10 @@ ws = " " | "\n"
 anything = (~newline any)+ &newline
 newline ="\n"
 
-qid =   (qid "/" namespace "/" ident) -- compound
+qid =   (rootid qidtail+) -- compound
       | rootid
-rootid =   ident "/" namespace "/" ident
+qidtail = "/" namespace "/" ident
+rootid =   "." "/" namespace "/" ident
 
 namespace = ("i" | "o" | "x" | "c" |"n") &slash
 slash = "/"
@@ -29,8 +30,8 @@ dig = "0" .. "9"
 
 }
 
-main [first @line] = [[${first}${line}]]
-firstline [indent spc fact @ws] = [[${indent}${spc}rect ${fact}${ws}]]
+main [first @line] = {{ let f = _first._glue (); scopeAdd ('top', f);}} [[# rect ${f}\n${line}]]
+firstline [indent spc fact @ws] = [[${fact}]]
 line [indent spc fact @ws] = [[${indent}${spc}${fact}${ws}]]
 indent [@cs] = [[${cs}]]
 fact_rect [k s qid] = [[${k}${s}${qid}]]
@@ -45,9 +46,10 @@ ws [c] = [[${c}]]
 anything [@cs nl] = [[${cs}]]
 newline [c] = [[${c}]]
 
-qid_compound [id sl1 namesp sl2 idnt] = [[(${id} ${namesp} ${idnt})]]
+qid_compound [rid @tail] = [[${rid}${tail}]]
 qid [rid] = [[${rid}]]
-rootid [root sl1 ns sl2 id] = [[(${root} ${ns} ${id})]]
+qidtail [sl1 ns sl2 id] = [[${sl1}${ns}${sl2}${id}]]
+rootid [dot sl1 ns sl2 id] = [[${scopeGet ('top')}${sl1}${ns}${sl2}${id}]]
 
 namespace [c sl] = [[${c}]]
 slash [c] = [[${c}]]

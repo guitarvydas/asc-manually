@@ -1,5 +1,3 @@
 #!/bin/bash
-./build.bash
-./devmd2fb.bash hw
-#./devmd2fb.bash hwsub6.md
+./devmd2fb.bash $1
 txl _.brace fb.txl
