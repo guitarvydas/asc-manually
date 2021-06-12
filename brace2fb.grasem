@@ -7,7 +7,7 @@ BRACES2FB {
   circle = "circle" ws* qid ws* nested?
   text = "text" ws* qid ws* string
   connector = "connector" ws* qid sender receiver
-  ignore = "ignore" ws* qid
+  ignore = "ignore" ws* "connector" ws* qid
 
   nested = "{" ws* objectOrAttribute+ "}" ws*
 
@@ -28,21 +28,19 @@ BRACES2FB {
       /* low-level */
       color = rgbaColor | constantColor
       rgbaColor = rgba ws*
-      constantColor = ("green" | "yellow" | "red") ws*
+      constantColor = ("green" | "yellow" | "red" | "gray") ws*
 
 
-      qualified_ident = qualified_ident_root | qualified_ident_other_component
-      qualified_ident_root= root "/" namespace ":" name ~"/"
-      qualified_ident_other_component = root componentRef "/" namespace ":" name
-      root = "."
-      componentRef = "/c:" name
-      namespace = ("i" | "o" | "c" | "x" | "n") &":"
-      rootabbreviation = "."
+      qualified_ident =   "(" qualified_ident ws* namespace ws* name ws* ")"     -- nested
+                        | "(" name ws* namespace ws* name ws* ")" -- final
+
+      namespace = ("i" | "o" | "c" | "x" | "n") &ws
+
       name = (absolute_ident | dig)
 
       absolute_ident = ~avoid absolute_ident_first_char absolute_ident_more_char* 
       absolute_ident_first_char = "a" .. "z"
-      absolute_ident_more_char = absolute_ident_first_char | dig
+      absolute_ident_more_char = absolute_ident_first_char | dig | "A" .. "Z"
 
 
 

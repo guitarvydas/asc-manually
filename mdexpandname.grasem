@@ -1,0 +1,32 @@
+MD2EXPAND {
+
+main = line+
+line = indent spc fact ws+
+indent = "#"+
+fact =   "rect" spc qid                       -- rect
+       | "rect" spc ident                     -- top
+       | "circle" spc qid                     -- circle
+       | "color" spc anything                 -- color
+       | "text" spc qid spc anything          -- text
+       | "connector" spc qid spc qid spc qid  -- connector
+
+spc = " "
+ws = " " | "\n"
+anything = (~newline any)+ &newline
+newline ="\n"
+
+qid =   (rootid qidtail+) -- compound
+      | rootid
+qidtail = "/" namespace "/" ident
+rootid =   "." "/" namespace "/" ident
+
+namespace = ("i" | "o" | "x" | "c" |"n") &slash
+slash = "/"
+
+ident = (lettr | dig)+
+lettr = "a" .."z" | "A" .."Z" | "_"
+dig = "0" .. "9"
+
+}
+
+

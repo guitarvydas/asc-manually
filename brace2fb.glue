@@ -28,7 +28,7 @@
       FACT ${scopeGet ('object')} receiver ${receiver}
       ]]
 
-  ignore [k @ws id] =
+  ignore [k @ws1 k2 @ws2 id] =
     [[FACT ${scopeGet ('object')} ignore ${id}
       ]]
 

@@ -5,6 +5,12 @@ tokens
   at "@"
 end tokens
 
+define topObject
+  [NL] [IN]
+  'rect [id] [opt container]
+  [EX] [NL]
+end define
+
 define rectObject
   [NL] [IN]
   'rect [rid] [opt container]
@@ -45,29 +51,37 @@ define rid
   [relativeIdent] | [absoluteIdent]
 end define
 
-define program
-    '{ [rectObject] '}
+define topid
+  [id]
 end define
 
 
-% rule replaceRelativeIdent
-%   replace $ [relativeIdent]
-%      R [relativeIdent]
-%   by
-%      R
-% end rule
+
+
+define program
+    '{ [topObject] '}
+end define
 
 rule replaceRelativeIdent
+  import topStringName [stringlit]
   replace $ [relativeIdent]
      R [relativeIdent]
   deconstruct R
      Root [root] Stuff [repeat pathname]
+  % construct topName [id]
+  %   AAA
+  construct topName [id]
+    'topStringName [+ '_abc_]
   by
-     'APP Stuff
+     topName Stuff
 end rule
 
 
 function main
+  import TXLargs [repeat stringlit]
+  deconstruct * TXLargs
+    topStringName [stringlit] other [repeat stringlit]
+  export topStringName [stringlit]
   replace [program]
     P [program]
   by
