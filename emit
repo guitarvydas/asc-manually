@@ -1,0 +1,45 @@
+FACT app_0 root nil
+    FACT app_0 rect app
+    FACT app_0 contains app_1
+FACT app_1 text (app n t1) 
+      FACT app_1 str "app"
+  
+      FACT app_0 contains app_2
+FACT app_2 circle (app i in)
+   
+FACT app_2 color green
+  
+FACT app_0 contains app_3
+FACT app_3 rect (app c inner)
+   
+FACT app_3 contains app_4
+FACT app_4 text ((app c inner) n t2) 
+      FACT app_4 str "./c/inner"
+   
+      FACT app_3 contains app_5
+FACT app_5 circle ((app c inner) i a)
+    
+FACT app_5 color green
+   
+FACT app_3 contains app_6
+FACT app_6 circle ((app c inner) o b)
+    
+FACT app_6 color yellow
+  
+FACT app_0 contains app_7
+FACT app_7 circle (app o out)
+   
+FACT app_7 color yellow
+  
+FACT app_0 contains app_8
+FACT app_8 connector (app x 1) 
+      FACT app_8 sender (app i in) 
+      FACT app_8 receiver ((app c inner) i a)
+  
+      FACT app_0 contains app_9
+FACT app_9 connector (app x 2) 
+      FACT app_9 sender ((app c inner) o b) 
+      FACT app_9 receiver (app o out)
+
+      
+    

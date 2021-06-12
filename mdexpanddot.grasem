@@ -1,0 +1,61 @@
+MD2EXPAND {
+
+main = firstline line+
+firstline = indent spc fact ws+
+line = indent spc fact ws+
+indent = "#"+
+fact =   "rect" spc qid                       -- rect
+       | "rect" spc ident                     -- top
+       | "circle" spc qid                     -- circle
+       | "color" spc anything                 -- color
+       | "text" spc qid spc anything          -- text
+       | "connector" spc qid spc qid spc qid  -- connector
+
+spc = " "
+ws = " " | "\n"
+anything = (~newline any)+ &newline
+newline ="\n"
+
+qid =   (rootid qidtail+) -- compound
+      | rootid
+qidtail = "/" namespace "/" ident
+rootid =   "." "/" namespace "/" ident
+
+namespace = ("i" | "o" | "x" | "c" |"n") &slash
+slash = "/"
+
+ident = (lettr | dig)+
+lettr = "a" .."z" | "A" .."Z" | "_"
+dig = "0" .. "9"
+
+}
+
+main [first @line] = {{ let f = _first._glue (); scopeAdd ('top', f);}} [[# rect ${f}\n${line}]]
+firstline [indent spc fact @ws] = [[${fact}]]
+line [indent spc fact @ws] = [[${indent}${spc}${fact}${ws}]]
+indent [@cs] = [[${cs}]]
+fact_rect [k s qid] = [[${k}${s}${qid}]]
+fact_top [k s id] = [[${id}]]
+fact_circle [k s qid] = [[${k}${s}${qid}]]
+fact_color [k s a] = [[${k}${s}${a}]]
+fact_text [k s1 qid s2 a] = [[${k}${s1}${qid}${s2}${a}]]
+fact_connector [k s1 qid1 s2 qid2 s3 qid3] = [[${k}${s1}${qid1}${s2}${qid2}${s3}${qid3}]]
+
+spc [c] = [[${c}]]
+ws [c] = [[${c}]]
+anything [@cs nl] = [[${cs}]]
+newline [c] = [[${c}]]
+
+qid_compound [rid @tail] = [[${rid}${tail}]]
+qid [rid] = [[${rid}]]
+qidtail [sl1 ns sl2 id] = [[${sl1}${ns}${sl2}${id}]]
+rootid [dot sl1 ns sl2 id] = [[${scopeGet ('top')}${sl1}${ns}${sl2}${id}]]
+
+namespace [c sl] = [[${c}]]
+slash [c] = [[${c}]]
+
+ident [@cs] = [[${cs}]]
+lettr [c] = [[${c}]]
+dig [c] = [[${c}]]
+
+

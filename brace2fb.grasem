@@ -1,12 +1,13 @@
 BRACES2FB {
   topRect = ws* "{" ws* "rect" ws* absolute_ident ws* nested+ "}" ws*
   
-  object = rect | circle | text | connector
+  object = rect | circle | text | connector | ignore
 
   rect = "rect" ws* qid ws* nested?
   circle = "circle" ws* qid ws* nested?
   text = "text" ws* qid ws* string
   connector = "connector" ws* qid sender receiver
+  ignore = "ignore" ws* "connector" ws* qid
 
   nested = "{" ws* objectOrAttribute+ "}" ws*
 
@@ -27,23 +28,21 @@ BRACES2FB {
       /* low-level */
       color = rgbaColor | constantColor
       rgbaColor = rgba ws*
-      constantColor = ("green" | "yellow" | "red") ws*
+      constantColor = ("green" | "yellow" | "red" | "gray") ws*
 
 
-      qualified_ident = componentRelativeName | rootRelativeName 
-      componentRelativeName = root componentNamespace componentPath namespace basename
-      rootRelativeName = root namespace basename
-      componentPath = aname "/"
-      numeric_name = dig+ 
-      basename = aname
-      aname = absolute_ident | numeric_name
-      namespace = ("i" | "o" | "c" | "x" |"n") "/"
-      componentNamespace = "c" "/"
-      root = "./"
+      qualified_ident =   "(" qualified_ident ws* namespace ws* name ws* ")"     -- nested
+                        | "(" name ws* namespace ws* name ws* ")" -- final
+
+      namespace = ("i" | "o" | "c" | "x" | "n") &ws
+
+      name = (absolute_ident | dig)
 
       absolute_ident = ~avoid absolute_ident_first_char absolute_ident_more_char* 
       absolute_ident_first_char = "a" .. "z"
-      absolute_ident_more_char = absolute_ident_first_char | dig
+      absolute_ident_more_char = absolute_ident_first_char | dig | "A" .. "Z"
+
+
 
       number = dig+
       dig = "0" .. "9"

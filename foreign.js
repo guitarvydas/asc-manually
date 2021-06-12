@@ -97,25 +97,58 @@ function spaces (n) {
     return s;
 }
 
-function newName (_namespace, _componentPath, _componentNamespace, _basename) {
+function newRootRelativeName (_namespace, _basename) {
     let namespace = _namespace._glue ();
-    let componentPath = "";
-    let componentNamespace = "";
     let basename = _basename._glue ();
-    let newID = scopeGet ('rootname') + "_" + gen ();
-    if ("" !== _componentPath) {componentPath = _componentPath._glue () };
-    if ("" !== _componentNamespace) { componentNamespace = _componentNamespace._glue () };
-    scopeAdd ('name', newID);
-    scopeAdd ('namespace', namespace);
-    scopeAdd ('componentPath', componentPath);
-    scopeAdd ('componentNamespace' , componentNamespace);
-    scopeAdd ('basename', basename);
+    let nsdID = newNSD ("root", namespace);
+    let nameID = newName(nsdID, basename);
+    scopeAdd ('name', nameID);
+}
+
+function newComponentRelativeName (_componentName, _namespace, _basename) {
+    let basename = _basename._glue ();
+    let componentName = _componentName._glue ();
+    let namespace = _namespace._glue ();
+
+    let nsdID = newNSD ("root", "c", componentName);
+    let nameID = newName (nsdID, componentName);
+    let nsdID2 = newNSD (nameID, namespace);
+    let nameID2 = newName (nsdID2, basename);
+    scopeAdd ('name', nameID2);
+
+    return nameID2;
+}
+
+
+
+
+function newName (nsdID, basename) {	
+    let id = newNameDescriptorID ();
+    emitFact (`${id} name nil`);
+    emitFact (`${id} namestr "${basename}"`);
+    emitFact (`${id} namespace ${nsdID}`);
+    return id;
+}
+
+function newNSD (component, namespace) {
+    let id = newNamespaceDescriptorID ();
+    emitFact (`${id} namespacedescriptor nil`);
+    emitFact (`${id} ns ${namespace}`);
+    emitFact (`${id} component ${component}`);
+    return id;
+}
+
+
+
+function newNameDescriptorID () {
+    return "nd_" + gen ();
+}
+
+function newNamespaceDescriptorID () {
+    return "nsd_" + gen ();
 }
 
 function name () { return scopeGet ('name') ; }
-function componentPath () { return scopeGet ('componentPath') ; }
-function componentNamespace () { return scopeGet ('componentNamespace') ; }
-function namespace () { return scopeGet ('namespace') ; }
-function basename () { return scopeGet ('basename') ; }
 
 function emit (s) { console.log (s); }
+function emitFact (s) { console.log (`FACT ${s}`); }
