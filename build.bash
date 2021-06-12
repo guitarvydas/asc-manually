@@ -7,6 +7,12 @@ catch () {
     exit 1
 }
 
+../grasem/run.bash mdexpanddot.grasem >_.js
+cat foreign.js _.js >_mdexpanddot.js
+
+../grasem/run.bash mdexpandname.grasem >_.js
+cat foreign.js _.js >_mdexpandname.js
+
 ../grasem/run.bash md2block.grasem >_.js
 cat foreign.js _.js >_md2block.js
 
