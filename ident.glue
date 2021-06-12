@@ -5,24 +5,11 @@
     constantColor [k @ws] = [[${k}${ws}]]
 
 
-      qualified_ident [qname] = [[${qname}]]
-
-      qualified_ident_root [root slash ns colon basename] =
-        {{
-	  newRootRelativeName (_ns, _basename);
-        }}
-        [[${name ()}]]
-
-      qualified_ident_other_component [root cref slash ns colon basename] =
-        {{
-	  newComponentRelativeName (_cref, _ns, _basename);
-        }}
-        [[${name ()}]]
-
-      root [c] = [[${c}]]
-      componentRef [k name] = [[${name}]]
-      namespace [c la_colon] = [[${c}]]
-      rootabbreviation [c] = [[${c}]]
+      qualified_ident_nested [lp qname @ws1 ns @ws2 name @ws3 rp] =
+        [[${lp}${qname}${ws1}${ns}${ws2}${name}${ws3}${rp}]]
+      qualified_ident_final [lp comp @ws1 ns @ws2 name @ws3 rp] =
+        [[${lp}${comp}${ws1}${ns}${ws2}${name}${ws3}${rp}]]
+      namespace [c look] = [[${c}]]
       name [n] = [[${n}]]
 
       absolute_ident [c @cs] = [[${c}${cs}]]
