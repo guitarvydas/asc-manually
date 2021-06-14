@@ -1,1 +1,5 @@
 namespace = [name]
+
+operation augment < (name) {
+  elsewhere
+}
