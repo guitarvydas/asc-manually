@@ -8,4 +8,7 @@ component {
 
     method initially
     method react (message)
+    method /busy >> boolean
+    method /ready >> boolean
+
 }

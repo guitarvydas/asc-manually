@@ -2,8 +2,6 @@ runnable {
   inputQueue: queue
   outputQueue: queue
 
-  method /react (message)
-  method /initially
   method /busy >> boolean
   method /ready >> boolean
 

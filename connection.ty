@@ -2,13 +2,11 @@ connection {
   name
   sender
   receiver
-  owner
 }
 
 sender = { connectionComponent, tag }
 receiver = { connectionComponent, tag }
 connectionComponent = component
-owner = composite
 
 
 operation design rule {
