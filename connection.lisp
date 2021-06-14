@@ -3,10 +3,14 @@
   sender
   receiver)
 
-(defun connection-new (self name sender receiver)
-  (setf (name self) (name-initially self name))
-  (setf (sender self) (sender-initially self sender))
-  (setf (receiverer self) (receiver-initially self receiver)))
+(defun connection-initially () )
+
+(defun connection-new (name sender receiver)
+  (let ((self (make-connection)))
+    (setf (name self) (name-new self name))
+    (setf (sender self) (sender-new self sender))
+    (setf (receiverer self) (receiver-new self receiver))
+    self))
 
 (defasctype "sender"
   component
@@ -16,11 +20,19 @@
   component
   tag)
 
-(defun sender-new (self component tag)
-  (setf (component self) component)
-  (setf (tag self) tag))
+(defun sender-initially ())
 
-(defun receiver-new (self component tag)
-  (setf (component self) component)
-  (setf (tag self) tag))
+(defun sender-new (component tag)
+  (let ((self (make-sender)))
+    (setf (component self) component)
+    (setf (tag self) tag)
+    self))
+
+(defun receiver-initially ())
+
+(defun receiver-new (component tag)
+  (let ((self (make-receiver)))
+    (setf (component self) component)
+    (setf (tag self) tag)
+    self))
 

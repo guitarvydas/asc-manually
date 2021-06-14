@@ -1,7 +1,9 @@
-(defstruct input
-  kind
+(defasctype "input"
   data)
 
-(defun input-initially (self)
-  (setf (kind self) "input")
-  (name-initially self))
+(defun input-initially ())
+
+(defun input-new ()
+  (let ((self (make-input)))
+    (name-new self)
+    self))

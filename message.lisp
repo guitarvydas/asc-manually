@@ -2,7 +2,11 @@
   tag
   data)
 
-(defun message-new (self tag data)
-  (set (tag self) tag)
-  (set (data self) data))
+(defun message-initially ())
+
+(defun message-new (tag data)
+  (let ((self (make-message)))
+    (set (tag self) tag)
+    (set (data self) data)
+    self))
   

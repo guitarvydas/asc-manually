@@ -1,0 +1,18 @@
+connection {
+  name
+  sender
+  receiver
+}
+
+sender = { connectionComponent tag }
+receiver = { connectionComponent tag }
+connectionComponent = component
+
+
+operation design rule {
+  check ../:contains (./sender/component) "valid sender for composite"
+  check ../:contains (./receiver/component) "valid receiver for composite"
+
+  check ./sender:validSenderTag (./tag) "valid sender tag"
+  check ./receiver:validReceiverTag (./tag) "valid receiver tag"
+}

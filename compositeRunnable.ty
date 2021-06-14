@@ -4,4 +4,4 @@ compositeRunnable {
   children: [nameChildPair]
 }
 
-nameChildPair = { name, component }
+nameChildPair { name component }

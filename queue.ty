@@ -1,5 +1,3 @@
 queue {
-  method push (message)
-  method pop >> message
-  method isEmpty >> boolean
+  elsewhere
 }

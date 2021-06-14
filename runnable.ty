@@ -1,11 +1,4 @@
 runnable {
   inputQueue: queue
   outputQueue: queue
-
-  method /busy >> boolean
-  method /ready >> boolean
-
-  method /popInputQueue >> message
-
-  method [/iterateOutputs] >> message
 }

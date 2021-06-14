@@ -1,0 +1,16 @@
+cat \
+    ascmacro.lisp \
+    typetable.lisp \
+    component.lisp \
+    composite.lisp \
+    compositeRunnable.lisp \
+    leafRunnable.lisp \
+    connection.lisp \
+    message.lisp \
+    namespace.lisp \
+    input.lisp \
+    output.lisp \
+    queue.lisp \
+    runnable.lisp \
+    name.lisp \
+    > types.lisp
