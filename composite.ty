@@ -1,0 +1,5 @@
+composite {
+    include component
+    children : namespace [component]
+    connections : namespace [connection]  
+}

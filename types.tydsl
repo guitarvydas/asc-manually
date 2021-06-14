@@ -1,0 +1,11 @@
+connection {
+  name
+  sender
+  receiver
+
+  method matches (sender) >> boolean
+}
+
+name = foreign
+sender = foreign
+receiver = foreign
