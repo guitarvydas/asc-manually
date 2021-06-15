@@ -4,12 +4,6 @@ component {
     outputs : namespace [output]
 
     not instantiable
-
-    method initially
-    method react (message)
-    method /busy >> boolean
-    method /ready >> boolean
-
 }
 
 name = kind
@@ -40,7 +34,9 @@ dispatcher {
 input = name
 leaf {
     include component
-}leafRunnable {
+}
+
+leafRunnable {
   include leaf
   include runnable
 }
@@ -50,10 +46,9 @@ data = any
 name = elsewhere
 namespace = [name]
 output = name
-queue {
-  elsewhere
-}
+queue = elsewhere
 runnable {
   inputQueue: queue
   outputQueue: queue
-}tag = foreign
+}
+tag = elsewhere
