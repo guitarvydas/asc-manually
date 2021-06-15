@@ -1,0 +1,96 @@
+ASCType {
+   typedefinitions = typedef+
+   typedef = equivalence | typedefinition
+   equivalence = foreigntype | typecollection | typeequivalence
+   foreigntype = ident "=" ws* "elsewhere" ws*
+   typeequivalence = ident "=" ws* identOrBuiltin ws*
+   typecollection = ident "=" ws* lbracket identOrBuiltin rbracket
+   typedefinition = ident "{" ws* typedefinitionbody+ "}" ws*
+   typedefinitionbody =   includeDefinition
+                        | collectionDefinition
+                        | fieldsDefinition
+                        | listDefinition
+                        | basicDefinition
+                        | elsewhere
+                        | other
+   basicDefinition = ident ":" ws* ident
+   collectionDefinition = ident ":" ws* lbracket ident rbracket
+   fieldsDefinition = field+
+   listDefinition = ident ":" ws* ident lbracket ident rbracket
+   includeDefinition = "include" ws* ident ws*
+
+   elsewhere = "elsewhere" ws*
+
+   field =   ident ":" ident -- named
+           | ident ~":" -- unnamed
+
+
+   identOrBuiltin = builtin | ident
+   builtin = anytype
+   anytype = "any" ws*
+   
+   other = notInstantiable | methodDef
+   notInstantiable = "not" ws* "instantiable" ws*
+   methodDef = "method" ws* toEol ws*
+
+   toEol = notNewline+ newline
+   newline = "\n"
+   notNewline = ~newline any
+
+   keyword = "not" | "instantiable" | "method" | "any" | "elsewhere"
+
+   ident = ~keyword id ws*
+   id = idFirst idRest*
+   idFirst = "A" .. "Z" | "a" .. "z"
+   idRest = "_" | "0" .. "9" | idFirst
+
+   ws = " " | newline
+
+   lbracket = "[" ws*
+   rbracket = "]" ws*
+   
+}
+
+
+   typedefinitions [@td] = [[${td}]]
+   typedef [td] = [[${td}]]
+   equivalence [ty] = [[${ty}]]
+   foreigntype [id eq @ws1 k @ws2] = [[${id}${eq}${ws1}${k}${ws2}]]
+   typeequivalence [id eq @ws1 b @ws2] = [[${id}${eq}${ws1}${b}${ws2}]]
+   typecollection [id eq @ws lb b rb] = [[${id}${eq}${ws}${lb}${b}${rb}]]
+   typedefinition [id lb @ws1 @body rb @ws2] = [[${id}${lb}${ws1}${body}${rb}${ws2}]]
+   typedefinitionbody [b] = [[${b}]]
+   basicDefinition [id1 k @ws id2] = [[${id1}${k}${ws}${id2}]]
+   collectionDefinition [id1 k @ws lb id2 rb] = [[${id1}${k}${ws}${lb}${id2}${rb}]]
+   fieldsDefinition [@field] = [[${field}]]
+   listDefinition [id1 k @ws id2 lb id3 rb] = [[${id1}${k}${ws}${id2}${lb}${id3}${rb}]]
+   includeDefinition [k @ws1 id @ws2] = [[${k}${ws1}${id}${ws2}]]
+
+   elsewhere [k @ws] = [[${k}${ws}]]
+
+   field_named [id1 k id2] = [[${id1}${k}${id2}]] 
+   field_unnamed [id] = [[${id}]]
+
+   identOrBuiltin [b] = [[${b}]]
+   builtin [k] = [[${k}]]
+   anytype [k @ws] = [[${k}${ws}]]
+   
+   other [d] = [[${d}]]
+   notInstantiable [k1 @ws1 k2 @ws2] = [[${k1}${ws1}${k2}${ws2}]]
+   methodDef [k @ws1 cs @ws2] = [[${k}${ws1}${cs}${ws2}]]
+
+   toEol [@cs nl] = [[${cs}${nl}]]
+   newline [c] = [[${c}]]
+   notNewline [c] = [[${c}]]
+
+   keyword [k] = [[${k}]]
+
+   ident [id @ws] = [[${id}${ws}]]
+   id [c @cs] = [[${c}${cs}]]
+   idFirst [c] = [[${c}]]
+   idRest [c] = [[${c}]]
+
+   ws [c] = [[${c}]]
+
+   lbracket [c @ws] = [[${c}${ws}]]
+   rbracket [c @ws] = [[${c}${ws}]]
