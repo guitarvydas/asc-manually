@@ -4,12 +4,6 @@ component {
     outputs : namespace [output]
 
     not instantiable
-
-    method initially
-    method react (message)
-    method /busy >> boolean
-    method /ready >> boolean
-
 }
 
 name = kind
