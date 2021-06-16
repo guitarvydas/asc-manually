@@ -2,41 +2,31 @@ ASCType {
    typedefinitions = typedef+
    typedef = equivalence | typedefinition
    
-   equivalence = elsewheretype | typecollection | basicequivalence
-   elsewheretype = ident "=" ws* "elsewhere" ws*
-   basicequivalence = ident "=" ws* identOrBuiltin ws*
-   typecollection = ident "=" ws* lbracket identOrBuiltin rbracket
+   equivalence = ident "=" ws* typeref
+     typeref = elsewheretype | typedcollectiontyperef | genericcollectiontyperef | builtintyperef | identtyperef
+       elsewheretype = "elsewhere" ws*
+       typedcollectiontyperef = ident lbracket identOrBuiltin rbracket
+       genericcollectiontyperef = lbracket identOrBuiltin rbracket
+       builtintyperef = builtintype
+       identtyperef = identtype
 
-   typedefinition = ident "{" ws* typedefinitionbody+ "}" ws*
-   typedefinitionbody =   collectionDefinition
-			| includeFields
-                        | listDefinition
-                        | field
-                        | basicDefinition
-                        | other
-   basicDefinition = ident ":" ws* ident
-   collectionDefinition = ident ":" ws* lbracket ident rbracket
-   listDefinition = ident ":" ws* ident lbracket ident rbracket
+	 builtintype = anytype
+	     anytype = "any" ws*
+	 identtype = ident
+	 identOrBuiltin = builtintype | identtype
 
+   typedefinition = ident "{" ws* field+ "}" ws*
+
+   field =   includeFields
+           | unnamedField
 
    includeFields = "include" ws* ident ws*
-   field =   ident ":" ident -- named
-           | ident ~":" -- unnamed
+   unnamedField = ident
 
-
-   identOrBuiltin = builtin | ident
-   builtin = anytype
-   anytype = "any" ws*
-   
-   other = notInstantiable | methodDef
-   notInstantiable = "not" ws* "instantiable" ws*
-   methodDef = "method" ws* toEol ws*
-
-   toEol = notNewline+ newline
    newline = "\n"
    notNewline = ~newline any
 
-   keyword = "not" | "instantiable" | "method" | "any" | "elsewhere"
+   keyword = "any" | "elsewhere" | "include"
 
    ident = ~keyword id ws*
    id = idFirst idRest*
@@ -51,33 +41,44 @@ ASCType {
 }
 
 
-   typedefinitions [@tds] = {{initializeTypeTable ();}}[[${displayTypeTable ()}]]
-   typedef [td] = [[${td}]]
+   typedefinitions [@tds] =
+     {{initializeTypeTable ();}}
+     [[${JSON.stringify (getTypeTable ())}]]
+     
+   typedef [td] = [[${console.log(td)}]]
 
-   equivalence [ty] = [[]]
-   elsewheretype [id eq @ws1 k @ws2] = [[${makeElsewhereType (id)}]]
-   basicequivalence [id eq @ws1 b @ws2] = [[${makeEquivalentType (id, b)}]]
-   typecollection [id eq @ws lb b rb] = [[${makeCollectionType(id, b)}]]
+   equivalence [id k @ws tr] = 
+     {{ newType (_id) }}
+     [[${typeName ()}]]
 
-   typedefinition [id lb @ws1 @body rb @ws2] = [[]]
-   typedefinitionbody [b] = [[]]
-   basicDefinition [id1 k @ws id2] = [[${makeEquivalentType (id1, id2)}]]
-   collectionDefinition [id1 k @ws lb id2 rb] = [[${makeCollectionType(id1, id2)}]]
-   listDefinition [id1 k @ws id2 lb id3 rb] = [[${makeNamedCollectionType(id1, id2, id3)}]]
+     typeref [tr] = [[]]
+       elsewheretype [k @ws2] =
+         [[${setTypeDescriptor ("","?"), typeName ()}]]
+       typedcollectiontyperef [id1 lb id2 rb] =
+         [[${setTypeDescriptor (id1, id2)}]]
+       genericcollectiontyperef [lb id rb] =
+         [[${setTypeDescriptor ("*", id2)}]]
+       builtintyperef [id] =
+         [[${setTypeDescriptor ("", id)}]]
+       identtyperef [id] =    
+         [[${setTypeDescriptor ("", id)}]]
 
-   includeFields [k @ws1 id @ws2] = [[]]
-   field_named [id1 k id2] = [[${id1}${k}${id2}]] 
-   field_unnamed [id] = [[${id}]]
+         builtintype [id] = [[${id}]]
+           anytype [k @ws] = [[?]]
+         identtype [id] = [[${id}]]
+         identOrBuiltin [id] = [[${id}]]
 
-   identOrBuiltin [b] = [[${b}]]
-   builtin [k] = [[${k}]]
-   anytype [k @ws] = [[%any]]
+
+   typedefinition [id lb @ws1 @fields rb @ws2] =
+     {{newType (_id), setTypeDescriptor ("", ".")}}
+     [[]]
+
+     field [f] = [[${f}]]
+       includeFields [k @ws1 id @ws2] = [[${k}${ws1}${id}${ws2}]]
+       unnamedField [id] = [[${id}]]
    
-   other [d] = [[${d}]]
-   notInstantiable [k1 @ws1 k2 @ws2] = [[]]
-   methodDef [k @ws1 cs @ws2] = [[${niy("method")}]]
 
-   toEol [@cs nl] = [[${cs}${nl}]]
+
    newline [c] = [[${c}]]
    notNewline [c] = [[${c}]]
 
@@ -90,5 +91,6 @@ ASCType {
 
    ws [c] = [[${c}]]
 
-   lbracket [c @ws] = [[${c}${ws}]]
-   rbracket [c @ws] = [[${c}${ws}]]
+   lbracket [c @ws] = [[${c}]]
+   rbracket [c @ws] = [[${c}]]
+

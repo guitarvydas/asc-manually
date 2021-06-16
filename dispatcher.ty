@@ -1,4 +1,5 @@
 dispatcher {
-  all : [component]
+  componentList
 }
 
+componentList = [component]

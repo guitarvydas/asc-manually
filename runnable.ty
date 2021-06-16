@@ -1,4 +1,7 @@
 runnable {
-  inputQueue: queue
-  outputQueue: queue
+  inqueue
+  outqueue
 }
+
+iqueue = queue [inputmessage]
+oqueue = queue [outputmessage]
