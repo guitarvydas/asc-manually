@@ -1,5 +1,8 @@
 composite {
-    include component
-    children : namespace [component]
-    connections : namespace [connection]  
+    link component
+    componentnamespace
+    connectionsnamespace
 }
+
+componentnamespace = namespace [component]
+connectionsnamespace = namespace [connection]

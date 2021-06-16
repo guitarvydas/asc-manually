@@ -6,33 +6,59 @@ function initializeTypeTable () {
     scopeAdd ('typeTable', []);
 }
 
-function displayTypeTable () {
+function getTypeTable () {
     let typeTable = scopeGet ('typeTable');
-    typeTable.forEach (table => console.log (JSON.stringify(table)));
+    //typeTable.forEach (table => console.log (JSON.stringify(table)));
+    return typeTable;
 }
 
-function makeElsewhereType (id) {
+function newType (_id) {
+    let id = _id._glue ();
+    let ty = {kind: "type", name: id};
+    scopeAdd ('type', ty);
     let typeTable = scopeGet ('typeTable');
-    typeTable.push ({ typename: id, type: "", collection: "", elsewhere: true });
-    scopeModify ('typeTable', typeTable);
+    typeTable.push (ty);
     return "";
 }
 
-function makeEquivalentType (id, ty) {
-    let typeTable = scopeGet ('typeTable');
-    typeTable.push ({ typename: id, type: ty, collection: "", elsewhere: false});
-    scopeModify ('typeTable', typeTable);
+function typeName () {
+    let ty = scopeGet ('type');
+    return ty.name;
+}
+
+function setTypeDescriptor (collection, base) {
+    let ty = scopeGet('type');
+    process.stderr.write("setTypeDesc " + ty.name + " " + collection + " " + base);
+    ty.desc = {collection: collection, base: base};
     return "";
 }
 
-function makeCollectionType (id, ty) {
-    return makeNamedCollectionType (id, ty, "%list");
+function newField () {
+    let ty = scopeGet ('type');
+    let f = {kind: "field", name: "", owner: ty.name, tydesc: {collection: "_flat_", base: ""}};
+    scopeAdd ('field', f);
+    let typeTable = scopeGet ('typeTable');
+    typeTable.push (f);
+    return "";
 }
 
-function makeNamedCollectionType (id, ty, collectorType) {
-    let typeTable = scopeGet ('typeTable');
-    typeTable.push ({ typename: id, type: ty, collection: collectorType, elsewhere: false});
-    scopeModify ('typeTable', typeTable);
-    return "";
+function setFieldName (n) {
+    let f = scopeGet ('field');
+    f.name = n;
+}
+
+function setFieldCollection (c) {
+    let f = scopeGet ('field');
+    f.tydesc.collection = c;
+}
+
+function setFieldBase (b) {
+    let f = scopeGet ('field');
+    f.tydesc.base = b;
+}
+
+function setFieldInclude (n) {
+    let f = scopeGet ('field');
+    f.include = n;
 }
 

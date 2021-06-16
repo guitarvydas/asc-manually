@@ -1,3 +1,5 @@
-message { tag data }
+inputmessage = message
+outputmessage = message
 
+message = {tag data}
 data = any

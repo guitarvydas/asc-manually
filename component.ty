@@ -1,9 +1,9 @@
 component {
-    kind : name
-    inputs : namespace [input]
-    outputs : namespace [output]
-
-    not instantiable
+    kind
+    inputnamespace
+    outputnamespace
 }
 
-name = kind
+kind = name
+inputnamespace = namespace [input]
+outputnamespace = namespace [output]

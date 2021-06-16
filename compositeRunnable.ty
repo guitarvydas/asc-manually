@@ -1,7 +1,8 @@
 compositeRunnable {
   include composite
   include runnable
-  children: [nameChildPair]
+  components
 }
 
 nameChildPair { name component }
+components = [nameChildPair]

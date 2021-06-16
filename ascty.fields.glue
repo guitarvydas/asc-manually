@@ -1,0 +1,45 @@
+
+
+   typedefinitions [@tds] =
+     {{initializeTypeTable ();}}
+     [[${displayTypeTable ()}]]
+   typedef [td] = [[${console.log(td)}]]
+
+   equivalence [ty] = [[${ty.name}]]
+     elsewheretype [id eq @ws1 k @ws2] = {{newType (_id)}} [[${setTypeLink ("_elsewhere_")}]]
+     basicequivalence [id eq @ws1 b @ws2] = {{newType (_id)}} [[${setTypeLink (b),typeName ()}]]
+
+   typedefinition [id lb @ws1 @fields rb @ws2] = {{newType (_id)}} [[${setTypeLink ("_here_"), typeName ()}]]
+   
+
+
+   newline [c] = [[${c}]]
+   notNewline [c] = [[${c}]]
+
+   keyword [k] = [[${k}]]
+
+   ident [id @ws] = [[${id}]]
+   id [c @cs] = [[${c}${cs}]]
+   idFirst [c] = [[${c}]]
+   idRest [c] = [[${c}]]
+
+   ws [c] = [[${c}]]
+
+   lbracket [c @ws] = [[${c}]]
+   rbracket [c @ws] = [[${c}]]
+
+
+
+   field [f] = {{ newField () }} [[${f}]]
+
+   includeFields [k @ws1 ty @ws2] = [[${setFieldInclude (ty)}]]
+   namedField [id k @ws tr] = [[${setFieldName (id)}]]
+   unnamedField [tr] = [[${tr}]]
+
+     typeref [ty] = [[${ty}]]
+   
+     namedlisttyperef [id lb tr rb] = [[${setFieldCollection (id)}]]
+     collectiontyperef [lb tr rb] = [[${setFieldCollection ("_any_")}]]
+     basictyperef [x] = [[${setFieldBase (x)}]]
+     builtin [x] = [[${x}]]
+       anytype [k @ws] = [[${setFieldBase ("_any_")}]]

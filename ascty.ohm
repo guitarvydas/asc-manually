@@ -1,0 +1,40 @@
+ASCType {
+   typedefinitions = typedef+
+   typedef = equivalence | typedefinition
+   
+   equivalence = ident "=" ws* typeref
+     typeref = elsewheretype | typedcollectiontyperef | genericcollectiontyperef | builtinType | identType
+     elsewheretype = "elsewhere" ws*
+     typedcollectiontyperef = ident lbracket identOrBuiltin rbracket
+     genericcollectiontyperef = lbracket identOrBuiltin rbracket
+
+     builtinType = anytype
+	 anytype = "any" ws*
+     identType = ident
+
+     identOrBuiltin = builtinType | identType
+   
+   typedefinition = ident "{" ws* field+ "}" ws*
+
+   field =   includeFields
+	   | unnamedField
+
+   includeFields = "include" ws* ident ws*
+   unnamedField = ident
+
+   newline = "\n"
+   notNewline = ~newline any
+
+   keyword = "any" | "elsewhere" | "include"
+
+   ident = ~keyword id ws*
+   id = idFirst idRest*
+   idFirst = "A" .. "Z" | "a" .. "z"
+   idRest = "_" | "0" .. "9" | idFirst
+
+   ws = " " | newline
+
+   lbracket = "[" ws*
+   rbracket = "]" ws*
+   
+}
