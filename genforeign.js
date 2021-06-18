@@ -33,32 +33,22 @@ function setTypeDescriptor (collection, base) {
     return "";
 }
 
-function newField () {
+function newField (fieldname, tyname) {
     let ty = scopeGet ('type');
-    let f = {kind: "field", name: "", owner: ty.name, tydesc: {collection: "_flat_", base: ""}};
+    let f = {kind: "field", name: fieldname, owner: ty.name, desc: {collection:"",base: tyname}};
     scopeAdd ('field', f);
     let typeTable = scopeGet ('typeTable');
     typeTable.push (f);
     return "";
 }
 
-function setFieldName (n) {
-    let f = scopeGet ('field');
-    f.name = n;
+function newInclude (name) {
+    let ty = scopeGet ('type');
+    let f = {kind: "includefields", name: name, owner: ty.name};
+    scopeAdd ('field', f);
+    let typeTable = scopeGet ('typeTable');
+    typeTable.push (f);
+    return "";
 }
 
-function setFieldCollection (c) {
-    let f = scopeGet ('field');
-    f.tydesc.collection = c;
-}
-
-function setFieldBase (b) {
-    let f = scopeGet ('field');
-    f.tydesc.base = b;
-}
-
-function setFieldInclude (n) {
-    let f = scopeGet ('field');
-    f.include = n;
-}
 

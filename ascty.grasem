@@ -57,7 +57,7 @@ ASCType {
        typedcollectiontyperef [id1 lb id2 rb] =
          [[${setTypeDescriptor (id1, id2)}]]
        genericcollectiontyperef [lb id rb] =
-         [[${setTypeDescriptor ("*", id2)}]]
+         [[${setTypeDescriptor ("*", id)}]]
        builtintyperef [id] =
          [[${setTypeDescriptor ("", id)}]]
        identtyperef [id] =    
@@ -74,8 +74,8 @@ ASCType {
      [[]]
 
      field [f] = [[${f}]]
-       includeFields [k @ws1 id @ws2] = [[${k}${ws1}${id}${ws2}]]
-       unnamedField [id] = [[${id}]]
+       includeFields [k @ws1 id @ws2] = [[${newInclude (id)}]]
+       unnamedField [id] = [[${newField (id, id)}]]
    
 
 
