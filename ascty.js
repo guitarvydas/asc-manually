@@ -33,34 +33,24 @@ function setTypeDescriptor (collection, base) {
     return "";
 }
 
-function newField () {
+function newField (fieldname, tyname) {
     let ty = scopeGet ('type');
-    let f = {kind: "field", name: "", owner: ty.name, tydesc: {collection: "_flat_", base: ""}};
+    let f = {kind: "field", name: fieldname, owner: ty.name, desc: {collection:"",base: tyname}};
     scopeAdd ('field', f);
     let typeTable = scopeGet ('typeTable');
     typeTable.push (f);
     return "";
 }
 
-function setFieldName (n) {
-    let f = scopeGet ('field');
-    f.name = n;
+function newInclude (name) {
+    let ty = scopeGet ('type');
+    let f = {kind: "includefields", name: name, owner: ty.name};
+    scopeAdd ('field', f);
+    let typeTable = scopeGet ('typeTable');
+    typeTable.push (f);
+    return "";
 }
 
-function setFieldCollection (c) {
-    let f = scopeGet ('field');
-    f.tydesc.collection = c;
-}
-
-function setFieldBase (b) {
-    let f = scopeGet ('field');
-    f.tydesc.base = b;
-}
-
-function setFieldInclude (n) {
-    let f = scopeGet ('field');
-    f.include = n;
-}
 
 // npm install ohm-js
 'use strict';
@@ -265,7 +255,7 @@ genericcollectiontyperef : function (_lb,_id,_rb,) {
 _ruleEnter ("genericcollectiontyperef");
 
 var lb = _lb._glue ();var id = _id._glue ();var rb = _rb._glue ();
-var _result = `${setTypeDescriptor ("*", id2)}`;
+var _result = `${setTypeDescriptor ("*", id)}`;
 _ruleExit ("genericcollectiontyperef");
 return _result;
 },
@@ -343,7 +333,7 @@ includeFields : function (_k,_ws1
 _ruleEnter ("includeFields");
 
 var k = _k._glue ();var ws1 = _ws1._glue ().join ('');var id = _id._glue ();var ws2 = _ws2._glue ().join ('');
-var _result = `${k}${ws1}${id}${ws2}`;
+var _result = `${newInclude (id)}`;
 _ruleExit ("includeFields");
 return _result;
 },
@@ -351,7 +341,7 @@ unnamedField : function (_id,) {
 _ruleEnter ("unnamedField");
 
 var id = _id._glue ();
-var _result = `${id}`;
+var _result = `${newField (id, id)}`;
 _ruleExit ("unnamedField");
 return _result;
 },

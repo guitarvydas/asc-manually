@@ -1,0 +1,35 @@
+(defasc hwhello ()
+  ((inputs '("./i/1"))
+   (outputs'("./o/1"))))
+
+(defmethod delegate ((self hwhello) (message message))
+   (cond ((message tag-= "./i/1/")
+   	  (delegate-input self message)
+
+
+
+#|
+hwhello {
+  inputs: '("./i/1")
+  outputs: '("./o/1")
+  initially { }
+  input {	  
+    on "./i/1" : delegate-input "./i/c/1/c/1"  
+  }
+  output {
+    on "./c/o/1" : delegate-output "./o/1"
+  }
+}
+	  
+hwhello {
+  inputs: '("./i/1")
+  outputs: '("./o/1")
+  initially { }
+  from-outside {	  
+    on "./i/1" : delegate-input "./i/c/1/c/1"  
+  }
+  from-inside {
+    on "./c/o/1" : delegate-output "./o/1"
+  }
+}
+|#	  

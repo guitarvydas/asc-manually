@@ -1,1 +1,64 @@
+component {
+    kind
+    inputnamespace
+    outputnamespace
+}
+
+kind = name
+inputnamespace = namespace [input]
+outputnamespace = namespace [output]
+composite {
+    link component
+    componentnamespace
+    connectionsnamespace
+}
+
+componentnamespace = namespace [component]
+connectionsnamespace = namespace [connection]
+compositeRunnable {
+  include composite
+  include runnable
+  components
+}
+
+nameChildPair { name component }
+components = [nameChildPair]connection {
+  name
+  sender
+  receiver
+}
+
+sender { connectionComponent tag }
+receiver { connectionComponent tag }
+connectionComponent = component
+dispatcher {
+  componentList
+}
+
+componentList = [component]
+input = name
+leaf {
+    include component
+}
+
+leafRunnable {
+  include leaf
+  include runnable
+}
+inputmessage = message
+outputmessage = message
+
+message {tag data}
 data = any
+name = elsewhere
+namespace = [name]
+output = name
+queue = elsewhere
+runnable {
+  inqueue
+  outqueue
+}
+
+iqueue = queue [inputmessage]
+oqueue = queue [outputmessage]
+tag = elsewhere
