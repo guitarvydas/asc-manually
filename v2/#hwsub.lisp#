@@ -11,3 +11,6 @@
 (defmethod instantiate-template ((self inner-456))
   (add-input-port self (make-instance 'input-port :tag "./i/r"))
   (add-output-port self (make-instance 'output-port :tag "./o/s")))
+
+(defun make-hwsub () 
+  (let 

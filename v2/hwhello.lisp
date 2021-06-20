@@ -1,14 +1,10 @@
-(defmethod initially ((self hello))
-  (setf (inports self) '("./i/1"))
-  (setf (outports self) '("./0/1"))
-  (call-next-method))
+(defmethod instantiate-template ((self asc-template))
+  (setter-kind self "hwhello")
+  (add-input-port self (make-instance 'input-port :tag "./i/1"))
+  (add-output-port self (make-instance 'output-port :tag "./o/1"))
+  (add-connection self (make-instance 'connection :tag "./i/1" :action #'(lambda (m)
+                                                                           (declare (ignore m))
+                                                                           (let ((r (hello)))
+                                                                             (send-upward self "./o/1" r))))))
 
-(defmethod react ((self hello) (m message))
-  (save-message self message)
-  (cond
-    ((tag= message self "./i/1")
-     (let ((result (fhello self m)))
-       (send-upwards self "./o/1" result)))))
-
-(defun fhello (self message) 
-  "Hello")
+(defun hello () "Hello")

@@ -1,0 +1,12 @@
+(defclass runnable-template ()
+  ((inputq :accessor inputq :initform (make-instance 'queue))
+   (childq :accessor childq :initform (make-instance 'queue))))
+
+(defclass dispatcher-interface ()
+  ((top :accessor top)))
+
+(defclass asc-runnable (asc-template runnable-template dispatcher-interface)
+  ())
+
+
+  

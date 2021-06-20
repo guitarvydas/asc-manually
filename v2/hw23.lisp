@@ -1,5 +1,8 @@
-;; combine hwhello(template) into hwsub(template) to produce hw23(template)
-
-make new template using hwsub and hwhello
-making hwsub/c/1 delegate to hwhello
-
+(defmethod instantiate-template ((self hw23))
+  (let ((c/1/c/1 (make-instance 'hwhello :kind "hwhello"))
+	(c/1 (get-child self "./c/1")))
+    (instantiate-template c/1/c/1)
+    (add-child c/1 "./c/1" c/1/c/1)
+    (add-connection c/1 (make-instance 'connection :tag "./c/1/i/r" :action (lambda (m) (send-downward self "./c/2/i/1" m))))
+    (add-connection c/1 (make-instance 'connection :tag "./c/2/o/1" :action (lambda (m) (send-upward self "./c/1/o/s" m)))))
+  (call-next-method))
