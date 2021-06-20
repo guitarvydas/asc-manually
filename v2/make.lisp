@@ -1,0 +1,7 @@
+(load "engine.lisp")
+(load "hwhello.lisp")
+(load "hwsub.lisp")
+(load "hwapp.lisp")
+(load "hw23.lisp")
+(load "hw123.lisp")
+(load "hwfinal.lisp")
