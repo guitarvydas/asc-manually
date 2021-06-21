@@ -1,0 +1,65 @@
+  program [@ws @c] = [[${ws}${c}]]
+  topcomponent [c] = [[${c}]]
+  topsameas  [id1 eq @ws id2 lb @da rb] = [[${id1}${eq}${ws}${id2}${lb}${da}${rb}]]
+  topnewcomponent [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+  component [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+
+  declOrAction [da] = [[${da}]]
+  declaration [decl] = [[${decl}]]
+  
+  inputDecl [k @ws id] = [[${k}${ws}${id}]]
+  outputDecl [k @ws id] = [[${k}${ws}${id}]]
+
+  compositionAction [a] = [[${a}]]
+  reactAction [on id arrow @ws cid op] = [[${on}${id}${arrow}${ws}${cid}${op}]]
+
+  childDecl [child @ws ic] = [[${child}${ws}${ic}]]
+  reactOperation [r] = [[${r}]]
+  reactions [lb @r rb] = [[${lb}${r}${rb}]]
+  reaction [at op] = [[${at}${op}]]
+
+  callOperation [call @ws id] = [[${call}${ws}${id}]]
+  sendDownwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+  sendUpwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+
+  forgetAction [k1 @ws1 k2 @ws2 id] = [[${k1}${ws1}${k2}${ws2}${id}]]
+  addChildAction [add @ws1 k @ws2 id1] = [[${add}${ws1}${k}${ws2}${id1}]]
+  addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = [[${add}${ws1}${k}${ws2}${id1}${portid2}${portid3}]]
+  
+  innerComponent [c] = [[${c}]]
+
+  letBlock [l @ws1 id eq @ws2 e lb @code rb] = [[${l}${ws1}${id}${eq}${ws2}${e}${lb}${code}${rb}]]
+  compositionOrReaction [a] = [[${a}]]
+
+  expression [e] = [[${e}]]
+  newExpression [n @ws id] = [[${n}${ws}${id}]]
+
+
+  connectionID [id @ws] = [[${id}${ws}]]
+
+  portident [id] = [[${id}]]
+  inputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[${id1}${slash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
+  outputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[${id1}${slash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
+  selfinputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[${dotslash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
+  selfoutputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[${dotslash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
+
+  
+  keyword [kw lookws @ws] = [[${kw}${ws}]]
+  ident [id @ws] = [[${id}${ws}]]
+  id [id] = [[${id}]]
+  rootedIdent [dot slash id1 @ws colon id2] = [[${dot}${slash}${id1}${ws}${colon}${id2}]]
+  qualifiedIdent [id1 @ws1 slash id2 @ws2 colon id3] = [[${id1}${ws1}${slash}${id2}${ws2}${colon}${id3}]]
+  absoluteIdent [c @cs] = [[${c}${cs}]]
+  identFirst [c] = [[${c}]]
+  identRest [c] = [[${c}]]
+  on [k @ws] = [[${k}${ws}]]
+  lb [k @ws] = [[${k}${ws}]]
+  rb [k @ws] = [[${k}${ws}]]
+
+  at [k @ws] = [[${k}${ws}]]
+  absoluteIdentOrIndex [i] = [[${i}]]
+  index [d] = [[${d}]]
+  dig [c] = [[${c}]]
+  
+  ws [c] = [[${c}]]
+  

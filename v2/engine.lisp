@@ -20,8 +20,8 @@
 
 (defclass asc-template ()
   ((kind :accessor kind :initform "<noname kind>" :initarg :kind)
-   (inports :accessor inports :initform (make-instance 'queue))
-   (outports :accessor outports :initform (make-instance 'queue))
+   (inports :accessor inports :initform nil)
+   (outports :accessor outports :initform nil)
    (child-templates :accessor child-templates :initform (make-hash-table :test 'equal))
    (reaction :accessor reaction :initform nil)
    (connections :accessor connections :initform nil)))
@@ -45,6 +45,9 @@
   ((child-instances :accessor child-instances :initform (make-hash-table :test 'equal))))
 
 ;;;;;;;;
+(defun new-connection (tag-name func)
+  (make-instance 'connection :tag tag-name :action func))
+;;;;;;;;
 (defun new-tag (s) (make-instance 'tag :tag s))
 ;;;;;;;;
 
@@ -52,9 +55,6 @@
 (defmethod empty-p ((self queue))
   (null (q self)))
 ;;;;;;;;
-
-(defmethod setter-kind ((self asc-template) s)
-  (setf (kind self) s))
 
 (defmethod add-input-port ((self asc-template) (port input-port))
   (push port (inports self)))
@@ -68,8 +68,12 @@
 (defmethod add-connection ((self asc-template) (connection connection))
   (push connection (connections self)))
 
-(defmethod get-child ((self asc-template) name)
+(defmethod get-child-template ((self asc-template) name)
   (gethash name (child-templates self)))
+
+(defmethod setter-kind ((self asc-template) kindName)
+  (setf (kind self) kindName))
+
 ;;;;;;;;
 
 (defmethod tag= ((self tag) (other tag))

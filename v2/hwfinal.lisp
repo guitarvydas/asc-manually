@@ -1,15 +1,7 @@
-(defclass hwfinal (hw123 asc-runnable) ())
-
-(defmethod instantiate-template ((self hwfinal))
-  (call-next-method))
-
-
 (defparameter *dispatcher* (make-instance 'dispatcher))
-(defparameter *app* (make-instance 'hwfinal))
 
 (defun test ()
-  (let ((test-template (make-instance 'hw23)))
-    (instantiate-template test-template)
+  (let ((test-template (new-hw123)))
     test-template))
   
 

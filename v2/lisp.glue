@@ -1,0 +1,102 @@
+  program [@ws @c] = [[${ws}${c}]]
+
+  topcomponent [c] = [[${c}]]
+  topsameas  [id1 eq @ws id2 lb @da rb] = 
+    {{scopeAdd ('component',_id1._glue ());}}
+[[(defun new-${id1} ()
+(let ((${id1} (new-${id2})))
+    ${da}
+    ${id1}))
+
+]]
+  topnewcomponent [id lb @da rb] = 
+    {{scopeAdd ('component',_id._glue ());}}
+[[(defun new-${id} ()
+(let ((${id} (make-instance 'asc :kind "${id}")))
+    ${da}
+    ${id}))
+
+]]
+
+
+  component [id lb @da rb] = 
+    {{scopeAdd ('component',_id._glue ());}}
+[["${id}"
+(let ((${id} (make-instance 'asc :kind "${id}")))
+    ${da}
+    ${id})
+
+]]
+
+  declOrAction [da] = [[${da}]]
+  declaration [decl] = [[${decl}]]
+  
+  inputDecl [k @ws id] = [[(add-input-port ${scopeGet ('component')} (make-instance 'input-port :tag "${id}"))\n]]
+  outputDecl [k @ws id] = [[(add-output-port ${scopeGet ('component')} (make-instance 'output-port :tag "${id}"))\n]]
+
+  compositionAction [a] = [[${a}]]
+  reactAction [on id arrow @ws cid op] =
+    [[(add-connection ${scopeGet ('component')} "${cid}" :tag "${id}" :action (lambda (self m) ${op}))
+    ]]
+
+  childDecl [child @ws ic] = 
+    [[(add-child ${scopeGet ('component')} ${ic})
+    ]]
+  reactOperation [r] = [[${r}]]
+  reactions [lb @r rb] = [[${r}]]
+  reaction [at op] = [[${op}]]
+
+  callOperation [call @ws id] = [[(${id})\n]]
+  sendDownwardOperation [send @ws1 k @ws2 id] =
+    [[(send-downward self ${id} m)]]
+  sendUpwardOperation [send @ws1 k @ws2 id] = 
+    [[(send-upward self ${id} m)]]
+
+  forgetAction [k1 @ws1 k2 @ws2 id] = [[(forget-connection "${id}")\n]]
+
+  addChildAction [add @ws1 k @ws2 id1] =
+    [[(add-child ${scopeGet ('component')} ${id1})\n]]
+
+  addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = 
+    [[(add-connection ${scopeGet ('component')} "${id1}" ${portid2} ${portid3})\n]]
+  
+  innerComponent [c] = [[${c}]]
+
+  letBlock [l @ws1 id eq @ws2 e lb @code rb] = 
+    [[(let ((${id} ${e}))
+    ${code})
+    ]]
+  compositionOrReaction [a] = [[${a}]]
+
+  expression [e] = [[${e}]]
+  newExpression [n @ws id] = [[(new-${id})]]
+
+
+  connectionID [id @ws] = [[${id}]]
+
+  portident [id] = [[${id}]]
+  inputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${id1} "${id2}")]]
+  outputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${id1} "${id2}")]]
+  selfinputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${scopeGet ('component')} "${id2}")]]
+  selfoutputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${scopeGet ('component')} "${id2}")]]
+
+  
+  keyword [kw lookws @ws] = [[${kw}${ws}]]
+  ident [id @ws] = [[${id}]]
+  id [id] = [[${id}]]
+  rootedIdent [dot slash id1 @ws colon id2] = [[${dot}${slash}${id1}${ws}${colon}${id2}]]
+  qualifiedIdent [id1 @ws1 slash id2 @ws2 colon id3] = [[${id1}${ws1}${slash}${id2}${ws2}${colon}${id3}]]
+  absoluteIdent [c @cs] = [[${c}${cs}]]
+  identFirst [c] = [[${c}]]
+  identRest [c] = [[${c}]]
+  on [k @ws] = [[${k}${ws}]]
+  lb [k @ws] = [[${k}${ws}]]
+  rb [k @ws] = [[${k}${ws}]]
+
+  at [k @ws] = [[${k}${ws}]]
+  absoluteIdentOrIndex [i] = [[${i}]]
+  index [d] = [[${d}]]
+  dig [c] = [[${c}]]
+  
+  ws [c] = [[${c}]]
+  
