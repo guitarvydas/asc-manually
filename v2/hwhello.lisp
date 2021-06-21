@@ -1,10 +1,11 @@
-(defmethod instantiate-template ((self asc-template))
-  (setter-kind self "hwhello")
-  (add-input-port self (make-instance 'input-port :tag "./i/1"))
-  (add-output-port self (make-instance 'output-port :tag "./o/1"))
-  (add-connection self (make-instance 'connection :tag "./i/1" :action #'(lambda (m)
-                                                                           (declare (ignore m))
-                                                                           (let ((r (hello)))
-                                                                             (send-upward self "./o/1" r))))))
-
-(defun hello () "Hello")
+(defun new-hwhello ()
+  (let ((self (make-instance 'asc-template :kind "hwhello")))
+    (add-input-port self (new-iport "in"))
+    (add-output-port self (new-oport "out"))
+    (add-connection self (make-instance 'connection
+					:name "./x:1" 
+					:tag "in"
+					:action #'(lambda (self m)
+						    (declare (ignorable self m))
+						    (send-upward self "out" (hello)))))
+    self))

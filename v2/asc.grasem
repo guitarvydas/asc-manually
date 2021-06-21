@@ -1,0 +1,117 @@
+AsynchronousSoftwareComponents {
+  program = ws* component+
+  component = ident lb declOrAction+ rb
+
+  declOrAction = declaration | compositionAction
+  declaration = inputDecl | outputDecl | childDecl
+  
+  inputDecl = "input" ws* ident
+  outputDecl = "output" ws* ident
+
+  compositionAction = letBlock | forgetAction | addChildAction| addConnectionAction | sameAsAction | reactAction
+  reactAction = on ident "=>" ws* connectionID reactOperation
+
+  childDecl = "child" ws* innerComponent
+  reactOperation = reaction | reactions
+  reactions = lb reaction+ rb
+  reaction =   at (callOperation | sendDownwardOperation | sendUpwardOperation)
+
+  callOperation = "call" ws* ident
+  sendDownwardOperation = "send" ws* "downward" ws* ident
+  sendUpwardOperation = "send" ws* "upward" ws* ident
+
+  forgetAction = "forget" ws* "connection" ws* ident
+  addChildAction = "add" ws* "child" ws* ident
+  addConnectionAction = "add" ws* "connection" ws connectionID ident ident
+  sameAsAction = "=" ws* ident
+  
+  innerComponent = component
+
+  letBlock = "let" ws* ident "=" ws* expression lb compositionOrReaction+ rb
+  compositionOrReaction = compositionAction | reactOperation
+
+  expression = newExpression
+  newExpression = "new" ws* ident
+
+
+  connectionID = rootedIdent ws*
+
+  
+  keyword = ("on" | "input" | "output" | "child" | "send" | "downward" | "upward" | "call" | "new" | "forget" | "add" | "connection" | "child" ) ws*
+  ident = id ws*
+  id = rootedIdent | qualifiedIdent | absoluteIdent
+  rootedIdent = "." "/" absoluteIdent ws* ":" absoluteIdentOrIndex
+  qualifiedIdent = absoluteIdent ws* "/" absoluteIdent ws* ":" absoluteIdentOrIndex
+  absoluteIdent = ~keyword identFirst identRest*
+  identFirst = "A" .. "Z" | "a" .. "z"
+  identRest = "0" .. "9" | "_" | identFirst
+  on = "on" ws+
+  lb = "{" ws*
+  rb = "}" ws*
+
+  at = "@" ws* 
+  absoluteIdentOrIndex = absoluteIdent | index
+  index = dig+
+  dig = "0" .. "9"
+  
+  ws = " " | "\n"
+  
+}
+
+  program [@ws @c] = [[${ws}${c}]]
+  component [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+
+  declOrAction [da] = [[${da}]]
+  declaration [decl] = [[${decl}]]
+  
+  inputDecl [k @ws id] = [[${k}${ws}${id}]]
+  outputDecl [k @ws id] = [[${k}${ws}${id}]]
+
+  compositionAction [a] = [[${a}]]
+  reactAction [on id arrow @ws cid op] = [[${on}${id}${arrow}${ws}${cid}${op}]]
+
+  childDecl [child @ws ic] = [[${child}${ws}${ic}]]
+  reactOperation [r] = [[${r}]]
+  reactions [lb @r rb] = [[${lb}${r}${rb}]]
+  reaction [at op] = [[${at}${op}]]
+
+  callOperation [call @ws id] = [[${call}${ws}${id}]]
+  sendDownwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+  sendUpwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+
+  forgetAction [k1 @ws1 k2 @ws2 id] = [[${k1}${ws1}${k2}${ws2}${id}]]
+  addChildAction [add @ws1 k @ws2 id1] = [[${add}${ws1}${k}${ws2}${id1}]]
+  addConnectionAction [add @ws1 k ws2 id1 id2 id3] = [[${add}${ws1}${k}${ws2}${id1}${id2}${id3}]]
+  sameAsAction [eq @ws id] = [[${eq}${ws}${id}]]
+  
+  innerComponent [c] = [[${c}]]
+
+  letBlock [l @ws1 id eq @ws2 e lb @code rb] = [[${l}${ws1}${id}${eq}${ws2}${e}${lb}${code}${rb}]]
+  compositionOrReaction [a] = [[${a}]]
+
+  expression [e] = [[${e}]]
+  newExpression [n @ws id] = [[${n}${ws}${id}]]
+
+
+  connectionID [id @ws] = [[${id}${ws}]]
+
+  
+  keyword [kw @ws] = [[${kw}${ws}]]
+  ident [id @ws] = [[${id}${ws}]]
+  id [id] = [[${id}]]
+  rootedIdent [dot slash id1 @ws colon id2] = [[${dot}${slash}${id1}${ws}${colon}${id2}]]
+  qualifiedIdent [id1 @ws1 slash id2 @ws2 colon id3] = [[${id1}${ws1}${slash}${id2}${ws2}${colon}${id3}]]
+  absoluteIdent [c @cs] = [[${c}${cs}]]
+  identFirst [c] = [[${c}]]
+  identRest [c] = [[${c}]]
+  on [k @ws] = [[${k}${ws}]]
+  lb [k @ws] = [[${k}${ws}]]
+  rb [k @ws] = [[${k}${ws}]]
+
+  at [k @ws] = [[${k}${ws}]]
+  absoluteIdentOrIndex [i] = [[${i}]]
+  index [d] = [[${d}]]
+  dig [c] = [[${c}]]
+  
+  ws [c] = [[${c}]]
+  
