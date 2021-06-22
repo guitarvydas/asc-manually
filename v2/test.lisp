@@ -1,3 +1,6 @@
 (defun test ()
-  (let ((test-template (new-hw123)))
-    test-template))
+  (let ((hw123 (new-hw123)))
+    (let ((run (new-runnable hw123 nil)))
+      (send-downward run (new-tag "in") t)
+      (dispatch-until-done run))))
+;;      (forever run))))

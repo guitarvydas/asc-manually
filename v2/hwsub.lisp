@@ -13,6 +13,7 @@
     (add-connection hwsub (new-connection "./x-1" "A" (lambda (self m) (send-downward self C m))))
     (add-connection hwsub (new-connection "./x-2" "D" (lambda (self m) (send-upward self B m))))
     
+    (debug hwsub *standard-output*)
     hwsub))
 
 
