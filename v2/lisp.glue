@@ -5,6 +5,7 @@
     {{scopeAdd ('component',_id1._glue ());}}
 [[(defun new-${id1} ()
 (let ((${id1} (new-${id2})))
+    (setter-kind ${id1} "${id1}")
     ${da}
     ${id1}))
 
@@ -12,7 +13,7 @@
   topnewcomponent [id lb @da rb] = 
     {{scopeAdd ('component',_id._glue ());}}
 [[(defun new-${id} ()
-(let ((${id} (make-instance 'asc :kind "${id}")))
+(let ((${id} (make-instance 'asc-template :kind "${id}")))
     ${da}
     ${id}))
 
@@ -22,7 +23,7 @@
   component [id lb @da rb] = 
     {{scopeAdd ('component',_id._glue ());}}
 [["${id}"
-(let ((${id} (make-instance 'asc :kind "${id}")))
+(let ((${id} (make-instance 'asc-template :kind "${id}")))
     ${da}
     ${id})
 
@@ -36,7 +37,7 @@
 
   compositionAction [a] = [[${a}]]
   reactAction [on id arrow @ws cid op] =
-    [[(add-connection ${scopeGet ('component')} "${cid}" :tag "${id}" :action (lambda (self m) ${op}))
+    [[(add-connection ${scopeGet ('component')} (new-connection "${cid}" "${id}" (lambda (self m) ${op})))
     ]]
 
   childDecl [child @ws ic] = 
@@ -52,13 +53,14 @@
   sendUpwardOperation [send @ws1 k @ws2 id] = 
     [[(send-upward self ${id} m)]]
 
-  forgetAction [k1 @ws1 k2 @ws2 id] = [[(forget-connection "${id}")\n]]
+  forgetAction [k1 @ws1 k2 @ws2 id] = [[(forget-connection ${scopeGet ('component')} "${id}")\n]]
 
   addChildAction [add @ws1 k @ws2 id1] =
-    [[(add-child ${scopeGet ('component')} ${id1})\n]]
+    [[(add-child ${scopeGet ('component')} (kind ${id1}) ${id1})\n]]
 
   addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = 
-    [[(add-connection ${scopeGet ('component')} "${id1}" ${portid2} ${portid3})\n]]
+    [[(add-connection ${scopeGet ('component')} (new-connection "${id1}" ${portid2} (lambda (self m) (send-downward self ${portid3} m))))
+    ]]
   
   innerComponent [c] = [[${c}]]
 
@@ -72,18 +74,18 @@
   newExpression [n @ws id] = [[(new-${id})]]
 
 
-  connectionID [id @ws] = [[${id}]]
+  connectionID [id @ws] = [[${replaceColons (id)}]]
 
   portident [id] = [[${id}]]
   inputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${id1} "${id2}")]]
-  outputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${id1} "${id2}")]]
+  outputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[(oport ${id1} "${id2}")]]
   selfinputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${scopeGet ('component')} "${id2}")]]
-  selfoutputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[(iport ${scopeGet ('component')} "${id2}")]]
+  selfoutputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[(oport ${scopeGet ('component')} "${id2}")]]
 
   
   keyword [kw lookws @ws] = [[${kw}${ws}]]
   ident [id @ws] = [[${id}]]
-  id [id] = [[${id}]]
+  id [id] = [[${replaceColons (id)}]]
   rootedIdent [dot slash id1 @ws colon id2] = [[${dot}${slash}${id1}${ws}${colon}${id2}]]
   qualifiedIdent [id1 @ws1 slash id2 @ws2 colon id3] = [[${id1}${ws1}${slash}${id2}${ws2}${colon}${id3}]]
   absoluteIdent [c @cs] = [[${c}${cs}]]

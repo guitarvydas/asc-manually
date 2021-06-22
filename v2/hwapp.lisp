@@ -1,11 +1,18 @@
 (defun new-hwapp ()
-  (let ((app (make-instance 'asc-app :kind "app")))
-    (add-input-port app (make-instance 'input-port :tag "in"))
-    (add-output-port app (make-instance 'output-port :tag "out"))
-    (let ((app/c/inner (make-instance 'asc-app :kind "app/inner")))
-      (add-input-port app/c/inner (make-instance 'input-port :tag "inner/in"))
-      (add-output-port app/c/inner (make-instance 'output-port :tag "inner/out"))
-      (add-child app "app/c/inner" app/c/inner))
-    (add-connection app (new-connection "in" (lambda (self m) (send-downward self "inner/in" m))))
-    (add-connection app (new-connection "inner/out" (lambda (self m) (send-upward self "out" m))))
-    app))
+(let ((hwapp (make-instance 'asc-template :kind "hwapp")))
+    (add-input-port hwapp (make-instance 'input-port :tag "in"))
+(add-output-port hwapp (make-instance 'output-port :tag "out"))
+(add-child hwapp "inner"
+(let ((inner (make-instance 'asc-template :kind "inner")))
+    (add-input-port inner (make-instance 'input-port :tag "in"))
+(add-output-port inner (make-instance 'output-port :tag "out"))
+
+    inner)
+
+)
+    (add-connection hwapp (new-connection "./x-1" "in" (lambda (self m) (send-downward self inner/i-in m))))
+    (add-connection hwapp (new-connection "./x-2" "inner/o-out" (lambda (self m) (send-upward self out m))))
+    
+    hwapp))
+
+
