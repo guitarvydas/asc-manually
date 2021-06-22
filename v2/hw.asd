@@ -6,11 +6,13 @@
                 :pathname "./"
 			:components (
 				     (:file "engine")
-				     (:file "hwhello")
-				     (:file "hwsub")
+				     (:file "mechanisms")
 				     (:file "hwapp")
+				     (:file "hwsub")
+				     (:file "hwhello")
 				     (:file "hw23")
 				     (:file "hw123")
 				     (:file "hwfinal")
+				     (:file "test")
 				     ))))
 

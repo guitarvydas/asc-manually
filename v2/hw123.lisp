@@ -1,8 +1,14 @@
 (defun new-hw123 ()
-  (let ((hw123 (new-hwapp))                
-        (inner (new-hw23)))
-    (add-connection inner (new-connection "./in" (lambda (self m) (send-downward self "./c/1/xx" m))))
-    (add-connection inner (new-connection "./c/1/i/yy" (lambda (self m) (send-upward self "./c/1/o/b" m))))
+(let ((hw123 (new-hwapp)))
     (setter-kind hw123 "hw123")
-    (add-child hw123 "./c/1" hw23)
+    (forget-connection hw123 "./x-1")
+(forget-connection hw123 "./x-2")
+(let ((hw23 (new-hw23)))
+    (add-child hw123 (kind hw23) hw23)
+(add-connection hw123 (new-connection "./x-3" (iport hw123 "in") (lambda (self m) (send-downward self (iport hw23 "A") m))))
+    (add-connection hw123 (new-connection "./x-4" (oport hw23 "B") (lambda (self m) (send-downward self (oport hw123 "out") m))))
+    )
+    
     hw123))
+
+
