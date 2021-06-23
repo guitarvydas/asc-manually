@@ -12,7 +12,6 @@
 				     (:file "hwhello")
 				     (:file "hw23")
 				     (:file "hw123")
-				     (:file "hwfinal")
 				     (:file "test")
 				     ))))
 
