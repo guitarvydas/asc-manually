@@ -35,20 +35,24 @@
   newExpression [n @ws id] = [[${n}${ws}${id}]]
 
 
-  connectionID [id @ws] = [[${id}${ws}]]
+  connectionID [id] = [[${id}]]
 
-  portident [id] = [[${id}]]
-  inputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[${id1}${slash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
-  outputportident [id1 slash ns @ws1 colon @ws2 id2 @ws3] = [[${id1}${slash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
-  selfinputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[${dotslash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
-  selfoutputportident [dotslash ns @ws1 colon @ws2 id2 @ws3] = [[${dotslash}${ns}${ws1}${colon}${ws2}${id2}${ws3}]]
-
-  
-  keyword [kw lookws @ws] = [[${kw}${ws}]]
+  absIdent [id @ws] = [[${id}${ws}]]
   ident [id @ws] = [[${id}${ws}]]
   id [id] = [[${id}]]
-  rootedIdent [dot slash id1 @ws colon id2] = [[${dot}${slash}${id1}${ws}${colon}${id2}]]
-  qualifiedIdent [id1 @ws1 slash id2 @ws2 colon id3] = [[${id1}${ws1}${slash}${id2}${ws2}${colon}${id3}]]
+
+  relativeID_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  relativeID_rootComponent [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  
+  path_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  path_root [c] = [[${c}]]
+
+  identInNS [id] = [[${id}]]
+  numIdent [n] = [[${n}]]
+  
+  keyword [kw lookws @ws] = [[${kw}${ws}]]
+  ns [kw look] = [[${kw}]]
+
   absoluteIdent [c @cs] = [[${c}${cs}]]
   identFirst [c] = [[${c}]]
   identRest [c] = [[${c}]]
@@ -57,7 +61,6 @@
   rb [k @ws] = [[${k}${ws}]]
 
   at [k @ws] = [[${k}${ws}]]
-  absoluteIdentOrIndex [i] = [[${i}]]
   index [d] = [[${d}]]
   dig [c] = [[${c}]]
   

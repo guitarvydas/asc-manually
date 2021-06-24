@@ -1,0 +1,19 @@
+RELID {
+relativeID = path "/" ns "/" identInNS
+path =   "." "/" "c" "/" absoluteIdent -- nested
+       | "." -- root
+root = "."
+identInNS = absoluteIdent | index
+
+keyword = ("on" | "input" | "output" | "child" | "send" | "downward" | "upward" | "call" | "new" | "forget" | "add" | "connection" | "child" | "i" | "o") &ws ws*
+ns = ("i" | "o" | "x" | "n" | "c") & "/"
+absoluteIdent = ~keyword ~ns identFirst identRest*
+  identFirst = "A" .. "Z" | "a" .. "z"
+  identRest = "0" .. "9" | "_" | identFirst
+
+  ws = " " | "\n"
+  
+  index = dig+
+  dig = "0" .. "9"
+
+}

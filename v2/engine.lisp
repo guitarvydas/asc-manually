@@ -1,11 +1,7 @@
-(defclass input-port ()
-  ((tag :accessor tag :initarg :tag)))
-
-(defclass output-port ()
-  ((tag :accessor tag :initarg :tag)))
-
-(defclass tag ()
-  ((tag :accessor tag :initarg :tag)))
+(defclass relative-id ()
+  ((path :accessor path :initarg :path) ;; "." or relative-id (recursive)
+   (ns :accessor ns :initarg :ns)  ;; namespace i/o/x/c/n
+   (id :accessor id :initarg :id))) ;; a name within the given namespace
 
 (defclass message ()
   ((tag :accessor tag :initarg :tag)
@@ -23,8 +19,8 @@
   ((kind :accessor kind :initform "<noname kind>" :initarg :kind)
    (inports :accessor inports :initform nil)
    (outports :accessor outports :initform nil)
-   (child-prototypes :accessor child-prototypes :initform (make-hash-table :test 'equal))
-   (connections :accessor connections :initform (make-hash-table :test 'equal))
+   (child-prototypes :accessor child-prototypes :initform (make-hash-table :test 'tag=))
+   (connections :accessor connections :initform (make-hash-table :test 'tag=))
    (forgotten-connections :accessor forgotten-connections :initform nil)))
 
 
@@ -32,7 +28,7 @@
 (defclass runnable ()
   ((inputq :accessor inputq :initform (make-instance 'queue))
    (upq :accessor upq :initform (make-instance 'queue))
-   (child-instances :accessor child-instances :initform (make-hash-table :test 'equal))
+   (child-instances :accessor child-instances :initform (make-hash-table :test 'tag=))
    (container :accessor container :initarg :container)
    (prototype-template :accessor prototype-template :initarg :prototype-template)))
 
@@ -40,28 +36,22 @@
 
 ;;;;;;;;
 (defmacro panic (self str)
-  `(let ((errormessage (format nil "~a: ~s~%" ,self ,str)))
+  `(let ((errormessage (format nil "internal error ~a: ~s~%" ,self ,str)))
     (error errormessage)))
 
 (defun empty-hash-p (h)
   (zerop (hash-table-count h)))
 ;;;;;;;;
-(defun new-connection (connection-name tag-name func)
-  (make-instance 'connection :name connection-name :tag (new-tag tag-name) :action func))
-;;;;;;;;
-(defun new-tag (s) (make-instance 'tag :tag s))
-;;;;;;;;
-(defun iport (owner tagname)
-  (declare (ignorable owner)) ;; should check that tagname is actually an input port of owner
-  (make-instance 'input-port :tag (new-tag tagname)))
-(defun oport (owner tagname)
-  (declare (ignorable owner))
-  (make-instance 'output-port :tag (new-tag tagname)))
+(defun relid (p namespace id)
+  (make-instance 'relative-id :path p :ns namespace :id id))
 
-(defmethod debug ((self input-port) out)
-  (format out "input port ~a~%" (tag self)))
-(defmethod debug ((self output-port) out)
-  (format out "output port ~a~%" (tag self)))
+(defmethod print-object ((rid relative-id) ostream)
+  (format ostream "[~a ~a ~a]" (path rid) (ns rid) (id rid)))
+
+;;;;;;;;
+(defun new-connection (connection-name relid func)
+  (make-instance 'connection :name connection-name :tag relid :action func))
+;;;;;;;;
 ;;;;;;;;
 
 ;;;;;;;;
@@ -75,10 +65,10 @@
   (push v (q self)))
 ;;;;;;;;
 
-(defmethod add-input-port ((self asc-template) (port input-port))
+(defmethod add-input-port ((self asc-template) (port relative-id))
   (push port (inports self)))
 
-(defmethod add-output-port ((self asc-template) (port output-port))
+(defmethod add-output-port ((self asc-template) (port relative-id))
   (push port (outports self)))
 
 (defmethod add-child ((self asc-template) child-name (asc asc-template))
@@ -87,9 +77,9 @@
 (defmethod add-connection ((self asc-template) (connection connection))
   (setf (gethash (name connection) (connections self)) connection))
 
-(defmethod forget-connection ((self asc-template) name)
-  (let ((conn (gethash name (connections self))))
-    (setf (gethash name (connections self)) nil)
+(defmethod forget-connection ((self asc-template) tag)
+  (let ((conn (gethash tag (connections self))))
+    (setf (gethash tag (connections self)) nil)
     (push conn (forgotten-connections self))))
 
 (defmethod setter-kind ((self asc-template) kindName)
@@ -97,15 +87,17 @@
 
 (defmethod debug ((self asc-template) out)
   (format out "kind ~a~%" (kind self))
-  (mapc #'(lambda (x) (debug x out)) (inports self))
-  (mapc #'(lambda (x) (debug x out)) (outports self))
+  (mapc #'(lambda (x) (format out "input port ~a~%" x)) (inports self))
+  (mapc #'(lambda (x) (format out "output port ~a~%" x)) (outports self))
   (maphash #'(lambda (name template)
 	       (declare (ignore template))
 	       (format out "child: ~a~%" name))
 	   (child-prototypes self))
   (when (not (empty-hash-p (connections self)))
     (maphash #'(lambda (nm connection)
-		 (format out "connection: ~a [~a]~%" nm (if connection (name connection) nil)))
+                 (if connection
+                     (format out "connection: ~a [~a]~%" nm (name connection))
+                     (format out "connection: ~a nil~%" nm (name connection))))
 	     (connections self)))
   (when (forgotten-connections self)
     (mapc #'(lambda (connection) 
@@ -114,14 +106,11 @@
   (format out "~%~%"))
 ;;;;;;;;
 
-(defmethod tag= ((self tag) (other tag))
-  (equal self other))
-
-(defmethod tag= ((self tag) (other input-port))
-  (tag= self (tag other)))
-
-(defmethod tag= ((self tag) (other output-port))
-  (tag= self (tag other)))
+(defmethod tag= ((self relative-id) (other relative-id))
+  (and 
+   (equal (path self) (path other))
+   (equal (ns self) (ns other))
+   (equal (id self) (id other))))
 
 ;;;;;;; runnable.lisp
 (defmethod child-instances-empty-p ((self runnable))
@@ -134,13 +123,13 @@
            (child-instances self)))
 
 ;;;;;;
-(defmethod new-message ((tag tag) data)
+(defmethod new-message ((tag relative-id) data)
   (make-instance 'message :tag tag :data data))
 
 (defmethod display-message ((self runnable) (m message))
   (format *standard-output* "asc ~a outputs message ~s~%" self m))
 
-(defmethod display-proto-message ((self runnable) (tag tag) data)
+(defmethod display-proto-message ((self runnable) (tag relative-id) data)
   (format *standard-output* "asc ~a outputs message ~s ~s~%" self tag data))
 
 ;;;;;;; engine.lisp
@@ -159,12 +148,12 @@
                    (setf (gethash instance-name (child-instances self)) instance)))
 	     (child-prototypes (prototype-template self)))))
 
-(defmethod send-upward ((self runnable) (tag tag) data)
+(defmethod send-upward ((self runnable) (tag relative-id) data)
   (if (container self)
       (push-queue (upq (container self)) (new-message tag data))
       (display-proto-message self tag data)))
 
-(defmethod send-downward ((component runnable) (tag tag) data)
+(defmethod send-downward ((component runnable) (tag relative-id) data)
   (push-queue (inputq component) (new-message tag data)))
 
 (defmethod has-work-p ((self runnable))
@@ -192,11 +181,19 @@
 
 (defmethod process-message ((self runnable) (m message))
   ;; this needs locking if running asynchronously (e.g. on bare metal without an operating system)
-  (maphash #'(lambda (name connection)
-               (declare (ignore name))
-               (when (and connection (tag= (tag m) (tag connection)))
-                 (funcall (action connection) self m)))
-           (connections (prototype-template self))))
+(format *standard-output* "~%process message ~a~%" (kind (prototype-template self)))
+  (let ((done nil))
+    (maphash #'(lambda (name connection)
+                 (declare (ignorable name))
+(format *standard-output* "connection ~a  tag = ~a connection.tag=~a~%" name (tag m) (if connection (tag connection) nil))
+                 (when (and connection (tag= (tag m) (tag connection)))
+		   (push name done)
+                   (funcall (action connection) self m)))
+             (connections (prototype-template self)))
+    (when done
+      (format *standard-output* "process message fired ~s ~s ~s~%" (tag m) (data m) done))
+    (unless done
+      (panic self (format nil "process-message did not fire any action ~s ~s" (tag m) (data m))))))
 
 (defmethod exec ((self runnable))
   (if (not (empty-p (upq self)))
@@ -222,7 +219,7 @@
 (defmethod dispatch-until-done ((self runnable))
   (let ((r (dispatch self)))
     (when r
-      (dispatch-until-done r))))
+      (dispatch-until-done self))))
   
 
 (defmethod left-most-deepest-ready ((self runnable) lmd)

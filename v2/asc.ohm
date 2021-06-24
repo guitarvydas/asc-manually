@@ -1,8 +1,8 @@
 AsynchronousSoftwareComponents {
   program = ws* topcomponent+
   topcomponent = topnewcomponent | topsameas
-  topsameas = ident "=" ws* ident lb declOrAction+ rb
-  topnewcomponent = ident lb declOrAction+ rb
+  topsameas = absIdent "=" ws* absIdent lb declOrAction+ rb
+  topnewcomponent = absIdent lb declOrAction+ rb
   component = ident lb declOrAction+ rb
 
   declOrAction = declaration | compositionAction
@@ -25,7 +25,7 @@ AsynchronousSoftwareComponents {
 
   forgetAction = "forget" ws* "connection" ws* ident
   addChildAction = "add" ws* "child" ws* ident
-  addConnectionAction = "add" ws* "connection" ws connectionID portident portident
+  addConnectionAction = "add" ws* "connection" ws connectionID ident ident
   
   innerComponent = component
 
@@ -33,22 +33,30 @@ AsynchronousSoftwareComponents {
   compositionOrReaction = compositionAction | reactOperation
 
   expression = newExpression
-  newExpression = "new" ws* ident
+  newExpression = "new" ws* absIdent
 
 
-  connectionID = rootedIdent ws*
-  portident = inputportident | outputportident | selfinputportident | selfoutputportident
-  inputportident = absoluteIdent "/" "i" ws* ":" ws* absoluteIdent ws*
-  outputportident = absoluteIdent "/" "o" ws* ":" ws* absoluteIdent ws*
-  selfinputportident = "./" "i" ws* ":" ws* absoluteIdent ws*
-  selfoutputportident = "./" "o" ws* ":" ws* absoluteIdent ws*
+  connectionID = ident
+
+  absIdent = absoluteIdent ws*
   
-  keyword = ("on" | "input" | "output" | "child" | "send" | "downward" | "upward" | "call" | "new" | "forget" | "add" | "connection" | "child" | "i" | "o") &ws ws*
   ident = id ws*
-  id = rootedIdent | qualifiedIdent | absoluteIdent
-  rootedIdent = "." "/" absoluteIdent ws* ":" absoluteIdentOrIndex
-  qualifiedIdent = absoluteIdent ws* "/" absoluteIdent ws* ":" absoluteIdentOrIndex
-  absoluteIdent = ~keyword identFirst identRest*
+  id = relativeID
+
+  relativeID =   path "/" ns "/" identInNS -- nested
+               | "." "/" "c" "/" identInNS -- rootComponent
+  path =   "." "/" "c" "/" absoluteIdent -- nested
+	   | "." -- root
+  root = "."
+  identInNS = alphaIdent | numIdent
+  alphaIdent = absoluteIdent
+  numIdent = index
+
+  keyword = ("on" | "input" | "output" | "child" | "send" | "downward" | "upward" | "call" | "new" | "forget" | "add" | "connection" | "child" | "i" | "o") &ws ws*
+
+  ns = ("i" | "o" | "x" | "n" | "c") & "/"
+
+  absoluteIdent = ~keyword ~ns identFirst identRest*
   identFirst = "A" .. "Z" | "a" .. "z"
   identRest = "0" .. "9" | "_" | identFirst
   on = "on" ws+
@@ -56,10 +64,12 @@ AsynchronousSoftwareComponents {
   rb = "}" ws*
 
   at = "@" ws* 
-  absoluteIdentOrIndex = absoluteIdent | index
   index = dig+
   dig = "0" .. "9"
   
   ws = " " | "\n"
   
 }
+
+
+
