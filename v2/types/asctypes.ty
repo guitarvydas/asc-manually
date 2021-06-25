@@ -1,0 +1,33 @@
+foreign types
+  name
+  any
+  foreign
+  association
+  queue
+  lambda
+end foreign types
+
+template = { name namespaces }
+
+namespaces = { i o c x n }
+
+i = [name]
+o = [name]
+x = [connection]
+c = [asc]
+n = association [item]
+
+connection = { name tag action }
+asc = { name static dynamic }
+static = template
+dynamic = @runnable
+action = lambda
+
+runnable = { static inputq upq container }
+inputq = queue [message]
+upq = queue [message]
+container = @runnable
+
+message = { tag any }
+tag = foreign
+item = { name any }

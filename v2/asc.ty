@@ -1,0 +1,28 @@
+foreign types
+  %name
+  %any
+  %foreign
+}
+
+template = { %name namespaces }
+
+namespaces = { ns-i ns-o ns-c ns-x ns-n }
+
+ns-i = [%name]
+ns-o = [%name]
+ns-x = [connection]
+ns-c = [ asc ]
+ns-n = association [ %name # %any ]
+
+connection = { name tag action }
+asc = { name static dynamic }
+static = template
+dynamic = @runnable
+
+runnable = { static inputq upq container }
+inputq = queue (message)
+upq = queue (message)
+container = @runnable
+
+message = { tag %any }
+tag = %foreign
