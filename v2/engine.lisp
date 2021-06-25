@@ -17,13 +17,8 @@
 
 (defclass asc-template ()
   ((kind :accessor kind :initform "<noname kind>" :initarg :kind)
-   (inports :accessor inports :initform nil)
-   (outports :accessor outports :initform nil)
-   (child-prototypes :accessor child-prototypes :initform (make-hash-table :test 'tag=))
-   (connections :accessor connections :initform (make-hash-table :test 'tag=))
+   (namespaces :accessor namespaces :initform (make-namespaces))
    (forgotten-connections :accessor forgotten-connections :initform nil)))
-
-
 
 (defclass runnable ()
   ((inputq :accessor inputq :initform (make-instance 'queue))
@@ -41,6 +36,15 @@
 
 (defun empty-hash-p (h)
   (zerop (hash-table-count h)))
+;;;;;;;;
+(defun make-namespaces ()
+  (let ((ns (make-hash-table :test 'equal)))
+    (setf (gethash "i" ns) (make-hash-table :test 'equal))
+    (setf (gethash "o" ns) (make-hash-table :test 'equal))
+    (setf (gethash "c" ns) (make-hash-table :test 'equal))
+    (setf (gethash "x" ns) (make-hash-table :test 'equal))
+    (setf (gethash "n" ns) (make-hash-table :test 'equal))
+    ns))
 ;;;;;;;;
 (defun relid (p namespace id)
   (make-instance 'relative-id :path p :ns namespace :id id))
@@ -66,20 +70,20 @@
 ;;;;;;;;
 
 (defmethod add-input-port ((self asc-template) (port relative-id))
-  (push port (inports self)))
+  (push port (namespace-i self)))
 
 (defmethod add-output-port ((self asc-template) (port relative-id))
-  (push port (outports self)))
+  (push port (namespace-o self)))
 
 (defmethod add-child ((self asc-template) child-name (asc asc-template))
   (setf (gethash child-name (child-prototypes self)) asc))
 
 (defmethod add-connection ((self asc-template) (connection connection))
-  (setf (gethash (name connection) (connections self)) connection))
+  (setf (gethash (name connection) (namespace-x self)) connection))
 
 (defmethod forget-connection ((self asc-template) tag)
-  (let ((conn (gethash tag (connections self))))
-    (setf (gethash tag (connections self)) nil)
+  (let ((conn (gethash tag (namespace-x self))))
+    (setf (gethash tag (namespace-x self)) nil)
     (push conn (forgotten-connections self))))
 
 (defmethod setter-kind ((self asc-template) kindName)
@@ -87,18 +91,18 @@
 
 (defmethod debug ((self asc-template) out)
   (format out "kind ~a~%" (kind self))
-  (mapc #'(lambda (x) (format out "input port ~a~%" x)) (inports self))
-  (mapc #'(lambda (x) (format out "output port ~a~%" x)) (outports self))
+  (mapc #'(lambda (x) (format out "input port ~a~%" x)) (namespace-i self))
+  (mapc #'(lambda (x) (format out "output port ~a~%" x)) (namespace-o self))
   (maphash #'(lambda (name template)
 	       (declare (ignore template))
 	       (format out "child: ~a~%" name))
 	   (child-prototypes self))
-  (when (not (empty-hash-p (connections self)))
+  (when (not (empty-hash-p (namespace-x self)))
     (maphash #'(lambda (nm connection)
                  (if connection
                      (format out "connection: ~a [~a]~%" nm (name connection))
                      (format out "connection: ~a nil~%" nm (name connection))))
-	     (connections self)))
+	     (namespace-x self)))
   (when (forgotten-connections self)
     (mapc #'(lambda (connection) 
 	      (format out "forgotten connection: ~a~%" (name connection)))
@@ -189,7 +193,7 @@
                  (when (and connection (tag= (tag m) (tag connection)))
 		   (push name done)
                    (funcall (action connection) self m)))
-             (connections (prototype-template self)))
+             (namespace-x (prototype-template self)))
     (when done
       (format *standard-output* "process message fired ~s ~s ~s~%" (tag m) (data m) done))
     (unless done

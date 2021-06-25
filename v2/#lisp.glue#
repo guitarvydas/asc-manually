@@ -32,12 +32,12 @@
   declOrAction [da] = [[${da}]]
   declaration [decl] = [[${decl}]]
   
-  inputDecl [k @ws id] = [[(add-object ${scopeGet ('component')} ${id} nil)\n]]
-  outputDecl [k @ws id] = [[(add-object ${scopeGet ('component')} ${id} nil)\n]]
+  inputDecl [k @ws id] = [[(nsadd ${scopeGet ('component')} ${id} nil)\n]]
+  outputDecl [k @ws id] = [[(nsadd ${scopeGet ('component')} ${id} nil)\n]]
 
   compositionAction [a] = [[${a}]]
   reactAction [on id arrow @ws cid op] =
-    [[(add-connection ${scopeGet ('component')} (new-connection ${cid} ${id} (lambda (self m) ${op})))
+    [[(nsadd ${scopeGet ('component')} ${cid} (new-connection ${cid} ${id} (lambda (self m) ${op})))
     ]]
 
   childDecl [child @ws ic] = 
