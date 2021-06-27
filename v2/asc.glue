@@ -1,68 +1,71 @@
-  program [@ws @c] = [[${ws}${c}]]
-  topcomponent [c] = [[${c}]]
-  topsameas  [id1 eq @ws id2 lb @da rb] = [[${id1}${eq}${ws}${id2}${lb}${da}${rb}]]
-  topnewcomponent [id lb @da rb] = [[${id}${lb}${da}${rb}]]
-  component [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+program[@ws @command] = [[${ws}${command}]]
+command[n @wsnl] = [[${n}${wsnl}]]
 
-  declOrAction [da] = [[${da}]]
-  declaration [decl] = [[${decl}]]
-  
-  inputDecl [k @ws id] = [[${k}${ws}${id}]]
-  outputDecl [k @ws id] = [[${k}${ws}${id}]]
+newASC[k @ws ascID] = [[${k}${ws}${ascID}]]
+input[k @ws ascID @ws2 iportID] = [[${k}${ws}${ascID}${ws2}${iportID}]]
+output[k @ws ascID @ws2 oportID] = [[${k}${ws}${ascID}${ws2}${oportID}]]
+text[k @ws ascID @ws2 textID @ws3 string] = [[${k}${ws}${ascID}${ws2}${textID}${ws3}${string}]]
+connection[k @ws ascID @ws2 connectionID @ws3 onClause] = [[${k}${ws}${ascID}${ws2}${connectionID}${ws3}${onClause}]]
+contains[k @ws ascID @ws2 childID @ws3 containedASC] = [[${k}${ws}${ascID}${ws2}${childID}${ws3}${containedASC}]]
 
-  compositionAction [a] = [[${a}]]
-  reactAction [on id arrow @ws cid op] = [[${on}${id}${arrow}${ws}${cid}${op}]]
+containedASC[cloneClause] = [[${cloneClause}]]
+cloneClause[k @ws ascID] = [[${k}${ws}${ascID}]]
 
-  childDecl [child @ws ic] = [[${child}${ws}${ic}]]
-  reactOperation [r] = [[${r}]]
-  reactions [lb @r rb] = [[${lb}${r}${rb}]]
-  reaction [at op] = [[${at}${op}]]
+onClause[k @ws portID @ws2 actionClause] = [[${k}${ws}${portID}${ws2}${actionClause}]]
+actionClause[lp @ws @action rp] = [[${lp}${ws}${action}${rp}]]
+action[k callAction @ws] = [[${k}${callAction}${ws}]]
+callAction[k @ws codeID] = [[${k}${ws}${codeID}]]
+sendAction[k @ws direction @ws2 where @ws3 what] = [[${k}${ws}${direction}${ws2}${where}${ws3}${what}]]
 
-  callOperation [call @ws id] = [[${call}${ws}${id}]]
-  sendDownwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
-  sendUpwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+ascID[rID] = [[${rID}]]
+childID[rID] = [[${rID}]]
+portID[iportID] = [[${iportID}]]
+iportID[rID] = [[${rID}]]
+oportID[rID] = [[${rID}]]
+connectionID[rID] = [[${rID}]]
+textID[rID] = [[${rID}]]
+codeID[rID] = [[${rID}]]
 
-  forgetAction [k1 @ws1 k2 @ws2 id] = [[${k1}${ws1}${k2}${ws2}${id}]]
-  addChildAction [add @ws1 k @ws2 id1] = [[${add}${ws1}${k}${ws2}${id1}]]
-  addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = [[${add}${ws1}${k}${ws2}${id1}${portid2}${portid3}]]
-  
-  innerComponent [c] = [[${c}]]
-
-  letBlock [l @ws1 id eq @ws2 e lb @code rb] = [[${l}${ws1}${id}${eq}${ws2}${e}${lb}${code}${rb}]]
-  compositionOrReaction [a] = [[${a}]]
-
-  expression [e] = [[${e}]]
-  newExpression [n @ws id] = [[${n}${ws}${id}]]
+direction[k] = [[${k}]]
+where[oportID] = [[${oportID}]]
+what[k] = [[${k}]]
+mwhat [k] = [[${k}]]
+toswhat [k] = [[${k}]]
 
 
-  connectionID [id] = [[${id}]]
+keyword[k wsla] = [[${k}]]
 
-  absIdent [id @ws] = [[${id}${ws}]]
-  ident [id @ws] = [[${id}${ws}]]
-  id [id] = [[${id}]]
 
-  relativeID_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
-  relativeID_rootComponent [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
-  
-  path_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
-  path_root [c] = [[${c}]]
+rID[  path k ns k2 identInNS] = [[${path}${k}${ns}${k2}${identInNS}]]
+path[path3210] = [[${path3210}]]
+path0 [id la] = [[${id}]]
+path1 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+path2 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+path3 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+root[dot] = [[${dot}]]
+identInNS[alphaIdent] = [[${alphaIdent}]]
+alphaIdent[absoluteIdent] = [[${absoluteIdent}]]
+numIdent[index] = [[${index}]]
+ns[k la] = [[${k}}]]
 
-  identInNS [id] = [[${id}]]
-  numIdent [n] = [[${n}]]
-  
-  keyword [kw lookws @ws] = [[${kw}${ws}]]
-  ns [kw look] = [[${kw}]]
+absoluteIdent[identFirst @identRest] = [[${identFirst}${identRest}]]
+identFirst[c] = [[${c}]]
+identRest[c] = [[${c}]]
+on[k @ws] = [[${k}${ws}]]
+lb[k @ws] = [[${k}${ws}]]
+rb[k @ws] = [[${k}${ws}]]
 
-  absoluteIdent [c @cs] = [[${c}${cs}]]
-  identFirst [c] = [[${c}]]
-  identRest [c] = [[${c}]]
-  on [k @ws] = [[${k}${ws}]]
-  lb [k @ws] = [[${k}${ws}]]
-  rb [k @ws] = [[${k}${ws}]]
+at[k @ws] = [[${k}${ws}]]
+index[@dig] = [[${dig}]]
+dig[c] = [[${c}]]
 
-  at [k @ws] = [[${k}${ws}]]
-  index [d] = [[${d}]]
-  dig [c] = [[${c}]]
-  
-  ws [c] = [[${c}]]
-  
+wsnl[ws] = [[${ws}]]
+ws[c] = [[${c}]]
+newline[k] = [[${k}]]
+
+string[dq @notDQ dq @ws] = [[${dq}${notDQ}${dq}${ws}]]
+dq[c] = [[${c}]]
+notDQ[any] = [[${any}]]
+
+
+

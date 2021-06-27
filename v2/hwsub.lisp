@@ -1,18 +1,11 @@
-(defun new-hwsub ()
-(let ((hwsub (make-instance 'asc-template :kind "hwsub")))
-    (add-input-port hwsub (relid "." "i" "A"))
-(add-output-port hwsub (relid "." "o" "B"))
-(add-child hwsub "hole"
-(let ((hole (make-instance 'asc-template :kind "hole")))
-    (add-input-port hole (relid (relid "." "c" "hole") "i" "C"))
-(add-output-port hole (relid (relid "." "c" "hole") "o" "D"))
+(def (rid hwsub c _nonamekind))
+(input (ref (rid hwsub c _nonamekind)) (def (rid hwsub/c/_nonamekind i C)))
+(output (ref (rid hwsub c _nonamekind)) (def (rid hwsub/c/_nonamekind o D)))
 
-    hole)
-
-)
-    (add-connection hwsub (new-connection (relid "." "x" "1") (relid "." "i" "A") (lambda (self m) (send-downward self (relid (relid "." "c" "hole") "i" "C") m))))
-    (add-connection hwsub (new-connection (relid "." "x" "2") (relid (relid "." "c" "hole") "o" "D") (lambda (self m) (send-upward self (relid "." "o" "B") m))))
-    
-    hwsub))
-
+(def hwsub)
+(input (ref hwsub) (def (rid hwsub i A)))
+(output (ref hwsub) (def (rid hwsub o B)))
+(contains (ref hwsub) (ref (rid hsub c hole)) (clone (ref (rid hwsub c _nonamekind))))
+(connection (ref hwsub) (def (rid hwsub x 1)) (on (ref (rid hwsub i in)) (send 'downward (ref (rid hwsub/c/hole i C)) m)))
+(connection (ref hwsub) (def (rid hwsub x 2)) (on (ref (rid hwsub/c/hole o D)) (send 'upward (ref (rid hwsub o B)) m)))
 

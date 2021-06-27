@@ -1,107 +1,70 @@
-  program [@ws @c] = [[${ws}${c}]]
+program[@ws @command] = [[${ws}${command}]]
+command[n @wsnl] = [[${n}${wsnl}]]
 
-  topcomponent [c] = [[${c}]]
-  topsameas  [id1 eq @ws id2 lb @da rb] = 
-    {{scopeAdd ('component',_id1._glue ());}}
-[[(defun new-${id1} ()
-(let ((${id1} (new-${id2})))
-    (setter-kind ${id1} "${id1}")
-    ${da}
-    ${id1}))
+newASC[k @ws ascID] = [[(def ${ascID})]]
+input[k @ws ascID @ws2 iportID] = [[(input (ref-component ${ascID}) "i" (def ${iportID}))]]
+output[k @ws ascID @ws2 oportID] = [[(output (ref-component ${ascID}) "o" (def ${oportID}))]]
+text[k @ws ascID @ws2 textID @ws3 string] = [[(text (ref-component ${ascID}) "n" (def ${textID}) ${string})]]
+connection[k @ws ascID @ws2 connectionID @ws3 onClause] = [[(connection (ref-component ${ascID}) "x" (def ${connectionID}) ${onClause})]]
+contains[k @ws ascID @ws2 childID @ws3 containedASC] = [[(contains (ref-component ${ascID}) "c" ${containedASC})]]
 
-]]
-  topnewcomponent [id lb @da rb] = 
-    {{scopeAdd ('component',_id._glue ());}}
-[[(defun new-${id} ()
-(let ((${id} (make-instance 'asc-template :kind "${id}")))
-    ${da}
-    ${id}))
+containedASC[cloneClause] = [[${cloneClause}]]
+cloneClause[k @ws ascID] = [[(clone (ref ${ascID}))]]
 
-]]
+onClause[k @ws portID @ws2 actionClause] = [[(on (ref ${portID}) ${actionClause})]]
+actionClause[lp @ws @action rp] = [[${action}]]
+action[k callAction @ws] = [[${callAction}]]
+callAction[k @ws codeID] = [[(call (ref ${codeID}))]]
+sendAction[k @ws direction @ws2 where @ws3 what] = [[(send ${direction} (ref ${where}) ${what})]]
 
+ascID[rID] = [[${rID}]]
+childID[rID] = [[${rID}]]
+portID[iportID] = [[${iportID}]]
+iportID[rID] = [[${rID}]]
+oportID[rID] = [[${rID}]]
+connectionID[rID] = [[${rID}]]
+textID[rID] = [[${rID}]]
+codeID[rID] = [[${rID}]]
 
-  component [id lb @da rb] = 
-    {{scopeAdd ('component',basename (_id._glue ()));}}
-[["${scopeGet ('component')}"
-(let ((${scopeGet ('component')} (make-instance 'asc-template :kind "${scopeGet ('component')}")))
-    ${da}
-    ${scopeGet ('component')})
+direction[k] = [['${k}]]
+where[oportID] = [[${oportID}]]
+what[k] = [[${k}]]
+mwhat [k] = [[m]]
+toswhat [k] = [[(tospop)]]
 
-]]
-
-  declOrAction [da] = [[${da}]]
-  declaration [decl] = [[${decl}]]
-  
-  inputDecl [k @ws id] = [[(add-object ${scopeGet ('component')} ${id} nil)\n]]
-  outputDecl [k @ws id] = [[(add-object ${scopeGet ('component')} ${id} nil)\n]]
-
-  compositionAction [a] = [[${a}]]
-  reactAction [on id arrow @ws cid op] =
-    [[(add-connection ${scopeGet ('component')} (new-connection ${cid} ${id} (lambda (self m) ${op})))
-    ]]
-
-  childDecl [child @ws ic] = 
-    [[(add-object ${scopeGet ('component')} ${ic}
-    ]]
-  reactOperation [r] = [[${r}]]
-  reactions [lb @r rb] = [[${r}]]
-  reaction [at op] = [[${op}]]
-
-  callOperation [call @ws id] = [[(${basename (id)})\n]]
-  sendDownwardOperation [send @ws1 k @ws2 id] =
-    [[(send-downward self ${id} m)]]
-  sendUpwardOperation [send @ws1 k @ws2 id] = 
-    [[(send-upward self ${id} m)]]
-
-  forgetAction [k1 @ws1 k2 @ws2 id] = [[(forget-connection ${scopeGet ('component')} ${id})\n]]
-
-  addChildAction [add @ws1 k @ws2 id1] =
-    [[(add-child ${scopeGet ('component')} ${id1} ${basename (id1)})\n]]
-
-  addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = 
-    [[(add-connection ${scopeGet ('component')} (new-connection ${id1} ${portid2} (lambda (self m) (${choose_send (portid2, portid3)} self ${portid3} m))))
-    ]]
-  
-  innerComponent [c] = [[${c}]]
-
-  letBlock [l @ws1 id eq @ws2 e lb @code rb] = 
-    [[(let ((${basename (id)} ${e}))
-    ${code})
-    ]]
-  compositionOrReaction [a] = [[${a}]]
-
-  expression [e] = [[${e}]]
-  newExpression [n @ws id] = [[(new-${id})]]
+keyword[k wsla] = [[${k}]]
 
 
-  connectionID [id] = [[${id}]]
+rID[path k ns k2 identInNS] = [[(rid ${path} ${ns} ${identInNS})]]
+path[path3210] = [[${path3210}]]
+path0 [id la] = [[${id}]]
+path1 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+path2 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+path3 [id k k1 k2 p] = [[${id}${k}${k1}${k2}${p}]]
+root[dot] = [[${dot}]]
+identInNS[alphaIdent] = [[${alphaIdent}]]
+alphaIdent[absoluteIdent] = [[${absoluteIdent}]]
+numIdent[index] = [[${index}]]
+ns[k la] = [[${k}]]
 
-  absIdent [id @ws] = [[${id}]]
-  ident [id @ws] = [[${id}]]
-  id [id] = [[${id}]]
+absoluteIdent[identFirst @identRest] = [[${identFirst}${identRest}]]
+identFirst[c] = [[${c}]]
+identRest[c] = [[${c}]]
+on[k @ws] = [[${k}${ws}]]
+lb[k @ws] = [[${k}${ws}]]
+rb[k @ws] = [[${k}${ws}]]
 
-  relativeID_nested [path slash1 ns slash2 nsid] = [[(relid ${path} "${ns}" "${nsid}")]]
-  relativeID_rootComponent [path slash1 ns slash2 nsid] = [[(relid "." "${ns}" "${nsid}")]]
-  
-  path_nested [path slash1 ns slash2 nsid] = [[(relid "${path}" "${ns}" "${nsid}")]]
-  path_root [c] = [["."]]
+at[k @ws] = [[${k}${ws}]]
+index[@dig] = [[${dig}]]
+dig[c] = [[${c}]]
 
-  identInNS [id] = [[${id}]]
-  numIdent [n] = [[${n}]]
-  
-  keyword [kw lookws @ws] = [[${kw}${ws}]]
-  ns [kw look] = [[${kw}]]
+wsnl[ws] = [[${ws}]]
+ws[c] = [[${c}]]
+newline[k] = [[${k}]]
 
-  absoluteIdent [c @cs] = [[${c}${cs}]]
-  identFirst [c] = [[${c}]]
-  identRest [c] = [[${c}]]
-  on [k @ws] = [[${k}${ws}]]
-  lb [k @ws] = [[${k}${ws}]]
-  rb [k @ws] = [[${k}${ws}]]
+string[dq @notDQ dq @ws] = [[${dq}${notDQ}${dq}${ws}]]
+dq[c] = [[${c}]]
+notDQ[any] = [[${any}]]
 
-  at [k @ws] = [[${k}${ws}]]
-  index [d] = [[${d}]]
-  dig [c] = [[${c}]]
-  
-  ws [c] = [[${c}]]
-  
+
+

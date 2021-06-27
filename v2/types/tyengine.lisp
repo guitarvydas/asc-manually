@@ -30,4 +30,4 @@ triples: relation subject objet
 #  b
 ## b
 @  x   call method with name "x", one parameter=asc,
-       "x" might pop/push any stacks
+       "x" might pop/push stacks (any stacks contained by asc)

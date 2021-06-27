@@ -1,0 +1,68 @@
+  program [@ws @c] = [[${ws}${c}]]
+  topcomponent [c] = [[${c}]]
+  topsameas  [id1 eq @ws id2 lb @da rb] = [[${id1}${eq}${ws}${id2}${lb}${da}${rb}]]
+  topnewcomponent [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+  component [id lb @da rb] = [[${id}${lb}${da}${rb}]]
+
+  declOrAction [da] = [[${da}]]
+  declaration [decl] = [[${decl}]]
+  
+  inputDecl [k @ws id] = [[${k}${ws}${id}]]
+  outputDecl [k @ws id] = [[${k}${ws}${id}]]
+
+  compositionAction [a] = [[${a}]]
+  reactAction [on id arrow @ws cid op] = [[${on}${id}${arrow}${ws}${cid}${op}]]
+
+  childDecl [child @ws ic] = [[${child}${ws}${ic}]]
+  reactOperation [r] = [[${r}]]
+  reactions [lb @r rb] = [[${lb}${r}${rb}]]
+  reaction [at op] = [[${at}${op}]]
+
+  callOperation [call @ws id] = [[${call}${ws}${id}]]
+  sendDownwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+  sendUpwardOperation [send @ws1 k @ws2 id] = [[${send}${ws1}${k}${ws2}${id}]]
+
+  forgetAction [k1 @ws1 k2 @ws2 id] = [[${k1}${ws1}${k2}${ws2}${id}]]
+  addChildAction [add @ws1 k @ws2 id1] = [[${add}${ws1}${k}${ws2}${id1}]]
+  addConnectionAction [add @ws1 k ws2 id1 portid2 portid3] = [[${add}${ws1}${k}${ws2}${id1}${portid2}${portid3}]]
+  
+  innerComponent [c] = [[${c}]]
+
+  letBlock [l @ws1 id eq @ws2 e lb @code rb] = [[${l}${ws1}${id}${eq}${ws2}${e}${lb}${code}${rb}]]
+  compositionOrReaction [a] = [[${a}]]
+
+  expression [e] = [[${e}]]
+  newExpression [n @ws id] = [[${n}${ws}${id}]]
+
+
+  connectionID [id] = [[${id}]]
+
+  absIdent [id @ws] = [[${id}${ws}]]
+  ident [id @ws] = [[${id}${ws}]]
+  id [id] = [[${id}]]
+
+  relativeID_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  relativeID_rootComponent [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  
+  path_nested [path slash1 ns slash2 nsid] = [[${path}${slash1}${ns}${slash2}${nsid}]]
+  path_root [c] = [[${c}]]
+
+  identInNS [id] = [[${id}]]
+  numIdent [n] = [[${n}]]
+  
+  keyword [kw lookws @ws] = [[${kw}${ws}]]
+  ns [kw look] = [[${kw}]]
+
+  absoluteIdent [c @cs] = [[${c}${cs}]]
+  identFirst [c] = [[${c}]]
+  identRest [c] = [[${c}]]
+  on [k @ws] = [[${k}${ws}]]
+  lb [k @ws] = [[${k}${ws}]]
+  rb [k @ws] = [[${k}${ws}]]
+
+  at [k @ws] = [[${k}${ws}]]
+  index [d] = [[${d}]]
+  dig [c] = [[${c}]]
+  
+  ws [c] = [[${c}]]
+  

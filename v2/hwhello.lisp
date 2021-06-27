@@ -1,10 +1,6 @@
-(defun new-hwhello ()
-(let ((hwhello (make-instance 'asc-template :kind "hwhello")))
-    (add-input-port hwhello (relid "." "i" "in"))
-(add-output-port hwhello (relid "." "o" "out"))
-(add-connection hwhello (new-connection (relid "." "x" "1") (relid "." "i" "in") (lambda (self m) (hello)
-(send-upward self (relid "." "i" "out") m))))
-    
-    hwhello))
-
+(def hwhello)
+(input (ref hwhello) (def (rid hwhello i in)))
+(output (ref hwhello) (def (rid hwhello o out)))
+(text (ref hwhello) (def (rid hwhello n code)) "hello")
+(connection (ref hwhello) (def (rid hwhello x 1)) (on (ref (rid hwhello i in)) (call (ref (rid hwhello n code)))(send 'upward (ref (rid hwhello o out)) (tospop))))
 

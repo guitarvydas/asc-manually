@@ -1,8 +1,8 @@
 AsynchronousSoftwareComponents {
   program = ws* command+
-  command = (newASC | input | output | text | connection | contains) wsnl+
+  command = (new | input | output | text | connection | contains) wsnl+
   
-  newASC = "asc" ws+ ascID
+  new = "asc" ws+ ascID
   input = "input" ws+ ascID ws+ iportID
   output = "output" ws+ ascID ws+ oportID
   text = "text" ws+ ascID ws+ textID ws+ string
@@ -18,7 +18,7 @@ AsynchronousSoftwareComponents {
   callAction = "call" ws+ codeID
   sendAction = "send" ws+ direction ws+ where ws+ what
 
-    ascID = rID | absoluteIdent
+    ascID = rID
     childID = rID
     portID = iportID | oportID
     iportID = rID
@@ -29,14 +29,12 @@ AsynchronousSoftwareComponents {
 
     direction = "upward" | "downward"
     where = oportID
-    what = mwhat | toswhat
-    mwhat = "m"
-    toswhat = "tos"
+    what = "m" | "tos"
 
     keyword = ("asc" | "input" | "output" | "text" | "connection" | "contains" | "clone" | "on" | "call" | "send" | "upward" | "downward" | "m" | "tos") &ws
 
 
-    rID =   path "/" ns "/" identInNS
+    rID =   path "/" ns "/" identInNS -- nested
     path = path3 | path2 | path1 | path0
     path0 = absoluteIdent &"/"
     path1 = absoluteIdent "/" "c" "/" path0
