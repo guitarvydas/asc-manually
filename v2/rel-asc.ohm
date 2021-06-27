@@ -1,0 +1,75 @@
+AsynchronousSoftwareComponents {
+  program = ws* topcomponent+
+  topcomponent = topnewcomponent | topsameas
+  topsameas = absIdent "=" ws* absIdent lb declOrAction+ rb
+  topnewcomponent = absIdent lb declOrAction+ rb
+  component = ident lb declOrAction+ rb
+
+  declOrAction = declaration | compositionAction
+  declaration = inputDecl | outputDecl | childDecl
+  
+  inputDecl = "input" ws* ident
+  outputDecl = "output" ws* ident
+
+  compositionAction = letBlock | forgetAction | addChildAction| addConnectionAction | reactAction
+  reactAction = on ident "=>" ws* connectionID reactOperation
+
+  childDecl = "child" ws* innerComponent
+  reactOperation = reaction | reactions
+  reactions = lb reaction+ rb
+  reaction =   at (callOperation | sendDownwardOperation | sendUpwardOperation)
+
+  callOperation = "call" ws* ident
+  sendDownwardOperation = "send" ws* "downward" ws* ident
+  sendUpwardOperation = "send" ws* "upward" ws* ident
+
+  forgetAction = "forget" ws* "connection" ws* ident
+  addChildAction = "add" ws* "child" ws* ident
+  addConnectionAction = "add" ws* "connection" ws connectionID ident ident
+  
+  innerComponent = component
+
+  letBlock = "let" ws* ident "=" ws* expression lb compositionOrReaction+ rb
+  compositionOrReaction = compositionAction | reactOperation
+
+  expression = newExpression
+  newExpression = "new" ws* absIdent
+
+
+  connectionID = ident
+
+  absIdent = absoluteIdent ws*
+  
+  ident = id ws*
+  id = relativeID
+
+  relativeID =   path "/" ns "/" identInNS -- nested
+               | "." "/" "c" "/" identInNS -- rootComponent
+  path =   "." "/" "c" "/" absoluteIdent -- nested
+	   | "." -- root
+  root = "."
+  identInNS = alphaIdent | numIdent
+  alphaIdent = absoluteIdent
+  numIdent = index
+
+  keyword = ("on" | "input" | "output" | "child" | "send" | "downward" | "upward" | "call" | "new" | "forget" | "add" | "connection" | "child" | "i" | "o") &ws ws*
+
+  ns = ("i" | "o" | "x" | "n" | "c") & "/"
+
+  absoluteIdent = ~keyword ~ns identFirst identRest*
+  identFirst = "A" .. "Z" | "a" .. "z"
+  identRest = "0" .. "9" | "_" | identFirst
+  on = "on" ws+
+  lb = "{" ws*
+  rb = "}" ws*
+
+  at = "@" ws* 
+  index = dig+
+  dig = "0" .. "9"
+  
+  ws = " " | "\n"
+  
+}
+
+
+
