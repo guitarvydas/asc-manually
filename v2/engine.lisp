@@ -1,21 +1,29 @@
 ;; "rid" means "relative id"
 ;; rid is a 3-tuple - 1) component, 2) namespace, 3) name
 
+(defclass rid ()
+  ((path :accessor path)
+   (ns :accessor ns)
+   (id :accessor id)))
+
 (defmacro def (rid)
-  (error-if (exists rid) (format nil "id already exists ~a~%" rid))
-  (define-rid rid)
-  (lookup-rid rid))
+  `(progn
+     (error-if (exists ,rid) (format nil "id already exists ~a~%" ,rid))
+     (define-rid ,rid)
+     (lookup-rid ,rid)))
 
 (defmacro ref (rid)
-  (error-if-not (exists rid) (format nil "id does not exist ~a~%" rid))
-  (lookup-rid rid))
+  `(progn
+     (error-if-not (exists ,rid) (format nil "id does not exist ~a~%" ,rid))
+     (lookup-rid ,rid)))
 
 (defmacro ref-component (rid)
-  (error-if-not (exists rid) (format nil "id does not exist ~a~%" rid))
-  (lookup-rid-component rid))
+  `(progn
+     (error-if-not (exists ,rid) (format nil "id does not exist ~a~%" ,rid))
+     (lookup-rid-component ,rid)))
 
 (defmacro rid (path ns id)
-  `(relative-id :path path :namespace ns :id id))
+  `(relative-id :path ,path :namespace ,ns :id ,id))
 
 
 
@@ -42,7 +50,7 @@
     (unless c
       (setf c (make-component))
       (setf (gethash (path rid) *component-table*) c))
-    (let ((namespace ((ns path) c)))
+    (let ((namespace (gethash (ns rid) (namespaces c))))
       (setf (gethash (id rid) namespace) rid))))
     
 (defun lookup-rid-internal (rid)
@@ -51,16 +59,17 @@
   ;; return non-nil if found (currently, return the component)
   (let ((c (gethash (path rid) *component-table*)))
     (unless c
-      (return-from lookup-rid nil))
-    (let ((namespace ((ns path) c)))
-      (multiple-value-bind (name sucess) (gethash (id rid) namespace)
+      (return-from lookup-rid-internal (values nil nil nil nil)))
+    (let ((namespace (gethash (ns rid) (namespaces c))))
+      (multiple-value-bind (name success) (gethash (id rid) namespace)
 	(if success
-	    (values t c namespcace name)
+	    (values t c namespace name)
 	    (values nil nil nil nil))))))
 
 (defun lookup-rid (rid)
   (multiple-value-bind (success component ns name)
       (lookup-rid-internal rid)
+    (declare (ignore component ns name))
     (if success
 	rid
 	nil)))
@@ -68,6 +77,7 @@
 (defun lookup-rid-component (rid)
   (multiple-value-bind (success component ns name)
       (lookup-rid-internal rid)
+    (declare (ignore ns name))
     (if success
 	component
 	nil)))
@@ -75,7 +85,7 @@
 
 
 (defun exists (rid)
-  (let ((r (lookup-rid)))
+  (let ((r (lookup-rid rid)))
     (if r
 	t
 	nil)))
@@ -96,10 +106,10 @@
   (setf (gethash oport-rid (gethash ns component)) oport-rid))
 
 (defun text (component ns rid str)
-  (setf (gethash rid (gethash ns component) str)))
+  (setf (gethash rid (gethash ns component)) str))
 
 (defun connection (component ns rid action)
-  (setf (gethash rid (gethash ns component) action)))
+  (setf (gethash rid (gethash ns component)) action))
 
 (defun contains (component ns child-rid)
-  (setf (gethash child-rid (gethash ns component) child-rid)))
+  (setf (gethash child-rid (gethash ns component)) child-rid))

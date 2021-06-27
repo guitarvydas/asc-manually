@@ -10,8 +10,6 @@
 				     (:file "hwapp")
 				     (:file "hwsub")
 				     (:file "hwhello")
-				     (:file "hw23")
 				     (:file "hw123")
-				     (:file "test")
 				     ))))
 
