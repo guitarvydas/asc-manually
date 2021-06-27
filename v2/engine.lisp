@@ -1,16 +1,15 @@
 ;; "rid" means "relative id"
 ;; rid is a 3-tuple - 1) component, 2) namespace, 3) name
 
-(defclass rid ()
-  ((path :accessor path)
-   (ns :accessor ns)
-   (id :accessor id)))
+(defclass relative-id ()
+  ((path :accessor path :initarg :path)
+   (ns :accessor ns :initarg :namespace)
+   (id :accessor id :initarg :id)))
 
-(defmacro def (rid)
-  `(progn
-     (error-if (exists ,rid) (format nil "id already exists ~a~%" ,rid))
-     (define-rid ,rid)
-     (lookup-rid ,rid)))
+(defun def (rid)
+  (error-if (exists rid) (format nil "id already exists ~a~%" rid))
+  (define-rid rid)
+  (lookup-rid rid))
 
 (defmacro ref (rid)
   `(progn
@@ -23,7 +22,7 @@
      (lookup-rid-component ,rid)))
 
 (defmacro rid (path ns id)
-  `(relative-id :path ,path :namespace ,ns :id ,id))
+  `(make-instance 'relative-id :path ,path :namespace ,ns :id ,id))
 
 
 
@@ -40,7 +39,8 @@
     (setf (gethash "o" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "x" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "c" (namespaces c)) (make-hash-table :test 'equal))
-    (setf (gethash "n" (namespaces c)) (make-hash-table :test 'equal))))
+    (setf (gethash "n" (namespaces c)) (make-hash-table :test 'equal))
+    c))
 	
 
 (defparameter *component-table* (make-hash-table :test 'equal))
@@ -51,7 +51,8 @@
       (setf c (make-component))
       (setf (gethash (path rid) *component-table*) c))
     (let ((namespace (gethash (ns rid) (namespaces c))))
-      (setf (gethash (id rid) namespace) rid))))
+      (setf (gethash (id rid) namespace) rid))
+    c))
     
 (defun lookup-rid-internal (rid)
   ;; lookup the rid (for now, in a flat table)
@@ -99,8 +100,8 @@
 
 ;;;;;;;;;;;; engine
 
-(defun input (component ns iport-rid) 
-  (setf (gethash iport-rid (gethash ns component)) iport-rid))
+(defun input (iport-rid) 
+  (define-rid iport-rid))
 
 (defun output (component ns oport-rid) 
   (setf (gethash oport-rid (gethash ns component)) oport-rid))

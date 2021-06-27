@@ -50,7 +50,7 @@ AsynchronousSoftwareComponents {
 
     absoluteIdent = ~keyword ~ns identFirst identRest*
     identFirst = "_" | "A" .. "Z" | "a" .. "z"
-    identRest = "0" .. "9" | "_" | identFirst
+    identRest = "0" .. "9" | identFirst
     on = "on" ws+
     lb = "{" ws*
     rb = "}" ws*
