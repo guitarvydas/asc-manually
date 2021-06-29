@@ -6,21 +6,6 @@
    (ns :accessor ns :initarg :namespace)
    (id :accessor id :initarg :id)))
 
-(defun def (rid)
-  (error-if (exists rid) (format nil "id already exists ~a~%" rid))
-  (define-rid rid)
-  (lookup-rid rid))
-
-(defmacro ref (rid)
-  `(progn
-     (error-if-not (exists ,rid) (format nil "id does not exist ~a~%" ,rid))
-     (lookup-rid ,rid)))
-
-(defmacro ref-component (rid)
-  `(progn
-     (error-if-not (exists ,rid) (format nil "id does not exist ~a~%" ,rid))
-     (lookup-rid-component ,rid)))
-
 (defmacro rid (path ns id)
   `(make-instance 'relative-id :path ,path :namespace ,ns :id ,id))
 
@@ -45,51 +30,53 @@
 
 (defparameter *component-table* (make-hash-table :test 'equal))
 
-(defun define-rid (rid)
-  (let ((c (gethash (path rid) *component-table*)))
-    (unless c
-      (setf c (make-component))
-      (setf (gethash (path rid) *component-table*) c))
-    (let ((namespace (gethash (ns rid) (namespaces c))))
-      (setf (gethash (id rid) namespace) rid))
-    c))
-    
-(defun lookup-rid-internal (rid)
-  ;; lookup the rid (for now, in a flat table)
-  ;; return nil if not found
-  ;; return non-nil if found (currently, return the component)
-  (let ((c (gethash (path rid) *component-table*)))
-    (unless c
-      (return-from lookup-rid-internal (values nil nil nil nil)))
-    (let ((namespace (gethash (ns rid) (namespaces c))))
-      (multiple-value-bind (name success) (gethash (id rid) namespace)
-	(if success
-	    (values t c namespace name)
-	    (values nil nil nil nil))))))
+(defun lookup (name)
+  (gethash name *component-table*))
 
-(defun lookup-rid (rid)
-  (multiple-value-bind (success component ns name)
-      (lookup-rid-internal rid)
-    (declare (ignore component ns name))
-    (if success
-	rid
-	nil)))
+(defun %design-rule-failure (message)
+  (let ((s (concatenate 'string "design rule failure: " message)))
+    (error s)))
 
-(defun lookup-rid-component (rid)
-  (multiple-value-bind (success component ns name)
-      (lookup-rid-internal rid)
-    (declare (ignore ns name))
-    (if success
-	component
-	nil)))
+;; see rid-dsl
+(defmethod getter ((rid relative-id))
+  (with-slots (ns id) rid
+    (let ((c (ea rid)))
+      (gethash id
+               (gethash ns (namespaces c))))))
 
+(defmethod setter ((rid relative-id) val)
+  (with-slots (ns id) rid
+    (let ((c (ea rid)))
+      (multiple-value-bind (_ success)
+          (gethash id (gethash ns (namespaces c)))
+        (declare (ignore _))
+        (when success
+          (%design-rule-failure "must not already have a value"))
+        (setf (gethash id (gethash ns (namespaces c))) val)))))
 
+(defmethod def ((rid relative-id))
+  (ea rid))
 
-(defun exists (rid)
-  (let ((r (lookup-rid rid)))
-    (if r
-	t
-	nil)))
+(defmethod ea-raw ((rid relative-id))
+  (cond ((stringp (path rid))
+	 (let ((result (lookup (path rid))))
+	   (unless result
+	     (%design-rule-failure "must not be empty"))
+	   result))
+	(t
+	 (let ((ref (path rid)))
+	   (unless (string= "c" (ns ref))
+	     (%design-rule-failure "must contain a component namespace reference"))
+	   (let ((result (getter ref)))
+	     result)))))
+
+(defmethod ea ((rid relative-id))
+  (let ((result (ea rid)))
+    (unless (eq 'component (type-of result))
+      (%design-rule-failure "must be a component"))
+    result))
+	
+;;;;;;;;;
 
 (defun error-if (expr estring)
   (when expr
@@ -100,17 +87,20 @@
 
 ;;;;;;;;;;;; engine
 
+(defun new-component (rid)
+  (def rid rid))
+
 (defun input (iport-rid) 
-  (define-rid iport-rid))
+  (def iport-rid iport-rid))
 
-(defun output (component ns oport-rid) 
-  (setf (gethash oport-rid (gethash ns component)) oport-rid))
+(defun output (oport-rid) 
+  (def oport-rid))
 
-(defun text (component ns rid str)
-  (setf (gethash rid (gethash ns component)) str))
+(defun text (rid str)
+  (setter rid str))
 
-(defun connection (component ns rid action)
-  (setf (gethash rid (gethash ns component)) action))
+(defun connection (rid action)
+  (setter rid action))
 
-(defun contains (component ns child-rid)
-  (setf (gethash child-rid (gethash ns component)) child-rid))
+(defun contains (parent-rid child-rid)
+  (setter parent-rid `(contains ,child-rid)))
