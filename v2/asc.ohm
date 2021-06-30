@@ -7,9 +7,9 @@ AsynchronousSoftwareComponents {
   output = "output" ws+ ascID ws+ oportID
   text = "text" ws+ ascID ws+ textID ws+ string
   connection = "connection" ws+ ascID ws+ connectionID ws+ onClause
-  contains = "contains" ws+ ascID ws+ childID ws+ containedASC
+  contains = "contains" ws+ ascID ws+ childName ws+ containedASC
 
-  containedASC = cloneClause | ascID
+  containedASC = ascID
   cloneClause = "clone" ws+ ascID
 
   onClause = "on" ws+ portID ws+ actionClause
@@ -19,7 +19,7 @@ AsynchronousSoftwareComponents {
   sendAction = "send" ws+ direction ws+ where ws+ what
 
     ascID = rID | absoluteIdent
-    childID = rID
+    childName = rID
     portID = iportID | oportID
     iportID = rID
     oportID = rID
