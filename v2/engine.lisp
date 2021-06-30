@@ -16,10 +16,11 @@
 (defclass component ()
   ;; each component has 5 namespaces i,o,x,c,n
   ;; (input, output, connection, component, other-names, resp.)
-  ((namespaces :accessor namespaces :initform (make-hash-table :test 'equal))))
+  ((namespaces :accessor namespaces :initform (make-hash-table :test 'equal))
+   (name :accessor name :initarg :name)))
 
-(defun make-component ()
-  (let ((c (make-instance 'component)))
+(defun make-component (name)
+  (let ((c (make-instance 'component :name name)))
     (setf (gethash "i" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "o" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "x" (namespaces c)) (make-hash-table :test 'equal))
@@ -33,16 +34,31 @@
 (defun lookup (name)
   (gethash name *component-table*))
 
+(defun create-component (name)
+  (setf (gethash name *component-table*) (make-component name)))
+
 (defun %design-rule-failure (message)
   (let ((s (concatenate 'string "design rule failure: " message)))
     (error s)))
 
 ;; see rid-dsl
+(defparameter *create-flag* nil) ;; dynamic parameter used in ea-raw and fetch-raw, if t, create paths and don't flag missing paths as errors
+
+(defun component-namespace-p (ns)
+  (string= "c" ns))
+
+(defmethod fetch-raw (c ns id)
+  (let ((result (gethash id (gethash ns (namespaces c)))))
+    (when (and (null result) *create-flag* (component-namespace-p ns))
+      (setf result (make-component id))
+      (setf (gethash id (gethash ns (namespaces c))) result))
+    result))
+
 (defmethod getter ((rid relative-id))
   (with-slots (ns id) rid
     (let ((c (ea rid)))
-      (gethash id
-               (gethash ns (namespaces c))))))
+      (let ((result (fetch-raw c ns id)))
+        result))))
 
 (defmethod setter ((rid relative-id) val)
   (with-slots (ns id) rid
@@ -54,15 +70,19 @@
           (%design-rule-failure "must not already have a value"))
         (setf (gethash id (gethash ns (namespaces c))) val)))))
 
-(defmethod def ((rid relative-id))
-  (ea rid))
+(defmethod defasc ((rid relative-id))
+  (let ((*create-flag* t))
+    (ea rid)))
 
 (defmethod ea-raw ((rid relative-id))
   (cond ((stringp (path rid))
-	 (let ((result (lookup (path rid))))
-	   (unless result
-	     (%design-rule-failure "must not be empty"))
-	   result))
+	 (let ((lu (lookup (path rid))))
+	   (unless lu 
+             (cond (*create-flag* 
+                    (create-component (path rid)))
+                   (t (%design-rule-failure "must not be empty"))))
+           (let ((result (lookup (path rid))))
+             result)))
 	(t
 	 (let ((ref (path rid)))
 	   (unless (string= "c" (ns ref))
@@ -71,7 +91,7 @@
 	     result)))))
 
 (defmethod ea ((rid relative-id))
-  (let ((result (ea rid)))
+  (let ((result (ea-raw rid)))
     (unless (eq 'component (type-of result))
       (%design-rule-failure "must be a component"))
     result))
@@ -87,14 +107,16 @@
 
 ;;;;;;;;;;;; engine
 
-(defun new-component (rid)
-  (def rid rid))
+(defun new-component (name)
+  (defasc (make-instance 'relative-id :path name :namespace "" :id "")))
 
 (defun input (iport-rid) 
-  (def iport-rid iport-rid))
+  (defasc iport-rid)
+  (setter iport-rid iport-rid))
 
 (defun output (oport-rid) 
-  (def oport-rid))
+  (defasc oport-rid)
+  (setter oport-rid oport-rid))
 
 (defun text (rid str)
   (setter rid str))

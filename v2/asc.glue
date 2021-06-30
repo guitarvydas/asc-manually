@@ -18,7 +18,7 @@ callAction[k @ws codeID] = [[${k}${ws}${codeID}]]
 sendAction[k @ws direction @ws2 where @ws3 what] = [[${k}${ws}${direction}${ws2}${where}${ws3}${what}]]
 
 ascID[rID] = [[${rID}]]
-childID[rID] = [[${rID}]]
+childName[rID] = [[${rID}]]
 portID[iportID] = [[${iportID}]]
 iportID[rID] = [[${rID}]]
 oportID[rID] = [[${rID}]]

@@ -1,0 +1,7 @@
+inc hwapp.asc
+inc hw23.asc
+
+s~hwsub~hwapp/c/hw23~g
+
+append connect hw123/x/a3 on hwapp/c/inner/i/in (@forward downward hwapp/c/hw23/i/A)
+append connect hw123/x/a4 on hwapp/c/hw23/o/B (@forward upward hwapp/c/inner/out)

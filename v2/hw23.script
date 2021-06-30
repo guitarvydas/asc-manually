@@ -1,0 +1,10 @@
+inc hwsub.asc
+inc hwhello.asc
+
+s~hwhello~hwsub/c/hwhello~g
+
+;;; mapoutput hwsub/c/hole/o/D <- hwsub/c/hwhello/o/out
+append connection hwsub/x/a1 on hwsub/c/hwhello/o/out (@send upward hwsub/c/hole/o/D m)
+
+;;; mapinput
+append connection hwsub/x/a2 on hwsub/c/hole/i/C (@send downward hwsub/c/hwhello/i/in)
