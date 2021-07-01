@@ -16,6 +16,7 @@ actionClause[lp @ws @actions rp] = [[(lambda (self m) ${actions})]]
 action[k callAction @ws] = [[${callAction}]]
 callAction[k @ws codeID] = [[(call ${codeID})]]
 sendAction[k @ws direction @ws2 where @ws3 what] = [[(send self ${direction} ${where} ${what})]]
+forwardAction[k @ws direction @ws2 where] = [[(send self ${direction} ${where} m)]]
 outputAction[k @ws where] = [[(send self 'upward ${where} (tospop))]]
 
 ascID[rID] = [[${rID}]]

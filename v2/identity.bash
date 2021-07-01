@@ -6,4 +6,5 @@ cat foreign.js _.js >_ascIdentity.js
 node _ascIdentity <hwhello.asc
 node _ascIdentity <hwsub.asc
 node _ascIdentity <hwapp.asc
+./hw.bash
 node _ascIdentity <hw123.asc

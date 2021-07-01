@@ -14,9 +14,10 @@ AsynchronousSoftwareComponents {
 
   onClause = "on" ws+ portID ws+ actionClause
   actionClause = "(" ws* action+ ")"
-  action = "@" (callAction | sendAction | outputAction) ws*
+  action = "@" (callAction | sendAction | outputAction | forwardAction) ws*
   callAction = "call" ws+ codeID
   sendAction = "send" ws+ direction ws+ where ws+ what
+  forwardAction = "forward" ws+ direction ws+ where
   outputAction = "output" ws+ where
 
     ascID = rID | absoluteIdent
@@ -33,7 +34,7 @@ AsynchronousSoftwareComponents {
     what = mwhat
     mwhat = "m"
 
-    keyword = ("asc" | "input" | "output" | "text" | "connection" | "contains" | "clone" | "on" | "call" | "send" | "upward" | "downward" | "m" | "tos") &ws
+    keyword = ("asc" | "input" | "output" | "text" | "connection" | "contains" | "clone" | "on" | "call" | "send" | "upward" | "downward" | "m" | "tos" | "output" | "forward") &ws
 
 
     rID =   path "/" ns "/" identInNS
@@ -49,7 +50,7 @@ AsynchronousSoftwareComponents {
     ns = ("i" | "o" | "x" | "n" | "c") & "/"
 
     absoluteIdent = ~keyword ~ns identFirst identRest*
-    identFirst = "_" | "A" .. "Z" | "a" .. "z"
+    identFirst = "_" | "A" .. "Z" | "a" .. "z" | dig
     identRest = "0" .. "9" | identFirst
     on = "on" ws+
     lb = "{" ws*
