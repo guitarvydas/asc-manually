@@ -121,8 +121,8 @@
 (defun text (rid str)
   (setter rid str))
 
-(defun connection (rid action)
-  (setter rid action))
+(defun connection (name port fn)
+  (setter name (list port fn)))
 
 (defun contains (parent-rid child-rid)
   (setter parent-rid `(contains ,child-rid)))

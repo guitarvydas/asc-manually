@@ -16,6 +16,7 @@ actionClause[lp @ws @action rp] = [[${lp}${ws}${action}${rp}]]
 action[k callAction @ws] = [[${k}${callAction}${ws}]]
 callAction[k @ws codeID] = [[${k}${ws}${codeID}]]
 sendAction[k @ws direction @ws2 where @ws3 what] = [[${k}${ws}${direction}${ws2}${where}${ws3}${what}]]
+outputAction[k @ws where] = [[${k}${ws}${where}]]
 
 ascID[rID] = [[${rID}]]
 childName[rID] = [[${rID}]]
@@ -30,7 +31,6 @@ direction[k] = [[${k}]]
 where[oportID] = [[${oportID}]]
 what[k] = [[${k}]]
 mwhat [k] = [[${k}]]
-toswhat [k] = [[${k}]]
 
 
 keyword[k wsla] = [[${k}]]

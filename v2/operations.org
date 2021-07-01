@@ -1,0 +1,28 @@
+* kind construction
+  input r
+  output r
+  contains r cname
+* connecting instances
+  connect xname on port (... code ...)
+
+* legend
+** rid is Relative ID
+** r is rid
+** cname is a component name
+   rid
+** xname is a connection name
+   rid
+** port is a port name
+   rid
+** code is lines of text
+*** @send [upward|downward] port m
+    m is current message
+    message is a tuple {port X data}
+*** @forward [upward|downward] port
+    same as '@send [upward|downward] port m'
+*** @call code
+    execute lines of code specified by rid "code"
+    leave a result on top of the execution stack
+    stack-based, concatenative, forth-like
+    code is executed synchronously, sequentially, component waits for result
+*** @output port

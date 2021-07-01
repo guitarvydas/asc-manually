@@ -1,0 +1,11 @@
+inc hw23/c/1 hwsub.asc
+inc hw23/c/2 hwhello.asc
+
+s~hwsub~hw23/c/1~g
+s~hwhello~hw23/c/2~g
+
+;;; mapoutput hwsub/c/hole/o/D <- hwsub/c/hwhello/o/out
+append connection hw23/x/2 on hw23/c/2/o/out (@forward upward hw23/c/1/c/hole/o/D)
+
+;;; mapinput
+append connection hw23/x/1 on hw23/c/1/c/hole/i/C (@forward downward hw23/c/2/i/in)

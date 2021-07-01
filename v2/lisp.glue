@@ -1,7 +1,7 @@
 program[@ws @command] = [[${ws}${command}]]
 command[n @wsnl] = [[${n}${wsnl}]]
 
-newASC[k @ws ascID] = [[(defasc ${ascID})]]
+newASC[k @ws ascID] = [[]]
 input[k @ws ascID @ws2 iportID] = [[(input ${iportID})]]
 output[k @ws ascID @ws2 oportID] = [[(output ${oportID})]]
 text[k @ws ascID @ws2 textID @ws3 string] = [[(text ${textID} ${string})]]
@@ -11,11 +11,12 @@ contains[k @ws ascID @ws2 childID @ws3 containedASC] = [[(contains ${childID} ${
 containedASC[cloneClause] = [[${cloneClause}]]
 cloneClause[k @ws ascID] = [[(clone ${ascID})]]
 
-onClause[k @ws portID @ws2 actionClause] = [[(on ${portID} ${actionClause})]]
-actionClause[lp @ws @action rp] = [[${action}]]
+onClause[k @ws portID @ws2 actionClause] = [[${portID} ${actionClause}]]
+actionClause[lp @ws @actions rp] = [[(lambda (self m) ${actions})]]
 action[k callAction @ws] = [[${callAction}]]
 callAction[k @ws codeID] = [[(call ${codeID})]]
-sendAction[k @ws direction @ws2 where @ws3 what] = [[(send ${direction} ${where} ${what})]]
+sendAction[k @ws direction @ws2 where @ws3 what] = [[(send self ${direction} ${where} ${what})]]
+outputAction[k @ws where] = [[(send self 'upward ${where} (tospop))]]
 
 ascID[rID] = [[${rID}]]
 childName[rID] = [[${rID}]]
@@ -30,7 +31,6 @@ direction[k] = [['${k}]]
 where[oportID] = [[${oportID}]]
 what[k] = [[${k}]]
 mwhat [k] = [[m]]
-toswhat [k] = [[(tospop)]]
 
 keyword[k wsla] = [[${k}]]
 

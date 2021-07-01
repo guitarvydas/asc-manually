@@ -14,9 +14,10 @@ AsynchronousSoftwareComponents {
 
   onClause = "on" ws+ portID ws+ actionClause
   actionClause = "(" ws* action+ ")"
-  action = "@" (callAction | sendAction) ws*
+  action = "@" (callAction | sendAction | outputAction) ws*
   callAction = "call" ws+ codeID
   sendAction = "send" ws+ direction ws+ where ws+ what
+  outputAction = "output" ws+ where
 
     ascID = rID | absoluteIdent
     childName = rID
@@ -29,9 +30,8 @@ AsynchronousSoftwareComponents {
 
     direction = "upward" | "downward"
     where = oportID
-    what = mwhat | toswhat
+    what = mwhat
     mwhat = "m"
-    toswhat = "tos"
 
     keyword = ("asc" | "input" | "output" | "text" | "connection" | "contains" | "clone" | "on" | "call" | "send" | "upward" | "downward" | "m" | "tos") &ws
 

@@ -1,5 +1,5 @@
-inc hwapp.asc
-inc hw23.asc
+inc zz hwapp.asc
+inc yy hw23.asc
 
 s~hwsub~hwapp/c/hw23~g
 
