@@ -14,7 +14,7 @@
 ;;;;;;;;; rid utilities
 
 (defclass component ()
-  ;; each component has 5 namespaces i,o,x,c,n
+  ;; each component has 6 namespaces i,o,x,c,k,n
   ;; (input, output, connection, component, other-names, resp.)
   ((namespaces :accessor namespaces :initform (make-hash-table :test 'equal))
    (name :accessor name :initarg :name)))
@@ -25,6 +25,7 @@
     (setf (gethash "o" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "x" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "c" (namespaces c)) (make-hash-table :test 'equal))
+    (setf (gethash "k" (namespaces c)) (make-hash-table :test 'equal))
     (setf (gethash "n" (namespaces c)) (make-hash-table :test 'equal))
     c))
 	

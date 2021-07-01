@@ -5,8 +5,21 @@
 
 (input (rid (rid "hw123" "c" (rid "2" "c" "1")) "i" "A"))
 (output (rid (rid "hw123" "c" (rid "2" "c" "1")) "o" "B"))
-(contains (rid (rid "hw123" "c" (rid "2" "c" "1")) "c" "hole") (rid (rid "hw123" "c" (rid "2" "c" "1")) "n" "_nonamekind"))
-(connection (rid (rid "hw123" "c" (rid "2" "c" "1")) "x" "1") (rid (rid "hw123" "c" (rid "2" "c" "1")) "i" "A") (lambda (self m) (send self 'downward (rid (rid "hw123" "c" (rid "2" "c" (rid "1" "c" "hole"))) "i" "C") m)))
+
+(contains (rid (rid "hw123" "c" (rid "2" "c" "1")) "c" "hole") (rid (rid "hw123" "c" (rid "2" "c" "1")) "c" "_nonamekind"))
+
+(connection
+ (rid (rid "hw123" "c" (rid "2" "c" "1")) "x" "1") 
+ (rid (rid "hw123" "c" (rid "2" "c" "1")) "i" "A")
+ (lambda (self m)
+   (send self
+         'downward
+         (rid
+          (rid "hw123" "c"
+               (rid "2" "c"
+                    (rid "1" "c" "hole"))) "i" "C")
+         m)))
+
 (connection (rid (rid "hw123" "c" (rid "2" "c" "1")) "x" "2") (rid (rid "hw123" "c" (rid "2" "c" (rid "1" "c" "hole"))) "o" "D") (lambda (self m) (send self 'upward (rid (rid "hw123" "c" (rid "2" "c" "1")) "o" "B") m)))
 (input (rid (rid "hw123" "c" (rid "2" "c" "2")) "i" "in"))
 (output (rid (rid "hw123" "c" (rid "2" "c" "2")) "o" "out"))

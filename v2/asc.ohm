@@ -40,14 +40,15 @@ AsynchronousSoftwareComponents {
     rID =   path "/" ns "/" identInNS
     path = path3 | path2 | path1 | path0
     path0 = absoluteIdent &"/"
-    path1 = absoluteIdent "/" "c" "/" path0
-    path2 = absoluteIdent "/" "c" "/" path1
-    path3 = absoluteIdent "/" "c" "/" path2
+    path1 = absoluteIdent "/" kindns "/" path0
+    path2 = absoluteIdent "/" kindns "/" path1
+    path3 = absoluteIdent "/" kindns "/" path2
     root = "."
     identInNS = alphaIdent | numIdent
     alphaIdent = absoluteIdent
     numIdent = index
-    ns = ("i" | "o" | "x" | "n" | "c") & "/"
+    ns = ("i" | "o" | "x" | "n" | "c" | "k") & "/"
+    kindns = "k"
 
     absoluteIdent = ~keyword ~ns identFirst identRest*
     identFirst = "_" | "A" .. "Z" | "a" .. "z" | dig
