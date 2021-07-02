@@ -9,7 +9,21 @@
 (defmacro rid (path ns id)
   `(make-instance 'relative-id :path ,path :namespace ,ns :id ,id))
 
+(defclass child-descriptor ()
+  ((name :accessor name :initarg :name)
+   (static :accessor static :initarg :static)
+   (dynamic :accessor dynamic :initarg :dynamic :initform nil)))
 
+(defclass connection-descriptor ()
+  ((name :accessor name :initarg :name)       ;; a rid
+   (tag :accessor tag :initarg :tag)          ;; a rid
+   (action :accessor action :initarg :action))) ;; a lambda
+
+(defun make-child (name kind)
+  (make-instance 'child-descriptor :name name :static kind))
+
+(defun make-connection (name tag action)
+  (make-instance 'connection-descriptor :name name :tag tag :action action))
 
 ;;;;;;;;; rid utilities
 
@@ -88,8 +102,9 @@
 	 (let ((ref (path rid)))
 	   (unless (string= "c" (ns ref))
 	     (%design-rule-failure "must contain a component namespace reference"))
-	   (let ((result (getter ref)))
-	     result)))))
+	   (let ((child (getter ref)))
+	     (let ((result (static child)))
+	       result))))))
 
 (defmethod ea ((rid relative-id))
   (let ((result (ea-raw rid)))
@@ -123,7 +138,7 @@
   (setter rid str))
 
 (defun connection (name port fn)
-  (setter name (list port fn)))
+  (setter name (make-connection name port fn)))
 
-(defun contains (parent-rid child-name child-kind
-  (setter parent-rid `(contains ,child-rid)))
+(defun contains (parent-rid child-name child-kind)
+  (setter parent-rid (make-child child-name child-kind)))

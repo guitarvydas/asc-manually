@@ -27,7 +27,8 @@ where:
     case string: lookup (rid.path) => result
       design rule (result) "must not be empty"
     case _:
-      @getter (ref) => result
+      @getter (ref) => child
+      child.static => result
 	before 
 	  where ref = rid.path
 	  synonym ref, component-reference, "recursive reference to a component"
