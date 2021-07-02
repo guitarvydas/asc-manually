@@ -125,5 +125,5 @@
 (defun connection (name port fn)
   (setter name (list port fn)))
 
-(defun contains (parent-rid child-rid)
+(defun contains (parent-rid child-name child-kind
   (setter parent-rid `(contains ,child-rid)))
