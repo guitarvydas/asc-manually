@@ -43,6 +43,8 @@
     (setf (gethash "n" (namespaces c)) (make-hash-table :test 'equal))
     c))
 	
+(defmethod static ((c component))
+  c)
 
 (defparameter *component-table* (make-hash-table :test 'equal))
 
@@ -123,22 +125,30 @@
 
 ;;;;;;;;;;;; engine
 
-(defun new-component (name)
-  (defasc (make-instance 'relative-id :path name :namespace "" :id "")))
+(defun def-kind (rid)
+  (with-slots (path ns id) rid)
+  (def-ok-if-exists path)
+  (def-ok-if-exists 
+;; (defun new-component (name)
+;;   (defasc (make-instance 'relative-id :path name :namespace "" :id "")))
 
-(defun input (iport-rid) 
-  (defasc iport-rid)
-  (setter iport-rid iport-rid))
+;; (defun def-asc (rid) 
+;;   (def-ok-if-exists rid
+;;   (def-error-if-exists (iport-rid)))
 
-(defun output (oport-rid) 
-  (defasc oport-rid)
-  (setter oport-rid oport-rid))
+;; (defun def-input (iport-rid) 
+;;   (def-ok-if-exists (path iport-rid))
+;;   (def-error-if-exists (iport-rid)))
 
-(defun text (rid str)
-  (setter rid str))
+;; (defun def-output (oport-rid) 
+;;   (def-ok-if-exists (path oport-rid))
+;;   (def-error-if-exists (oport-rid)))
 
-(defun connection (name port fn)
-  (setter name (make-connection name port fn)))
+;; (defun text (rid str)
+;;   (setter rid str))
 
-(defun contains (parent-rid child-name child-kind)
-  (setter parent-rid (make-child child-name child-kind)))
+;; (defun connection (name port fn)
+;;   (setter name (make-connection name port fn)))
+
+;; (defun contains (parent-rid child-name child-kind)
+;;   (setter parent-rid (make-child child-name child-kind)))

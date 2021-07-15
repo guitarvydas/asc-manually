@@ -1,12 +1,12 @@
 program[@ws @command] = [[${ws}${command}]]
 command[n @wsnl] = [[${n}${wsnl}]]
 
-newASC[k @ws ascID] = [[]]
+newASC[k @ws ascID] = [[(defasc ${ascID})]]
 input[k @ws ascID @ws2 iportID] = [[(input ${iportID})]]
 output[k @ws ascID @ws2 oportID] = [[(output ${oportID})]]
 text[k @ws ascID @ws2 textID @ws3 string] = [[(text ${textID} ${string})]]
 connection[k @ws ascID @ws2 connectionID @ws3 onClause] = [[(connection ${connectionID} ${onClause})]]
-contains[k @ws ascID @ws2 childID @ws3 containedASC] = [[(contains ${childID} ${containedASC})]]
+contains[k @ws ascID @ws2 childID @ws3 containedASC] = [[(contains ${ascID} ${childID} ${containedASC})]]
 
 containedASC[cloneClause] = [[${cloneClause}]]
 cloneClause[k @ws ascID] = [[(clone ${ascID})]]

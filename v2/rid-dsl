@@ -1,3 +1,25 @@
+kind {
+  namespace [input]
+  namespace [output]
+  namespace [kind]
+  namespace [asc]
+  collection [connection]
+}
+
+def-top-level-kind-raw-no-supercede
+def-top-level-kind-raw-supercede
+def-kind-raw-no-supercede
+def-kind-raw-supercede
+
+kind-NewScope
+kind-PopScope
+def-input
+def-ouput
+add-asc (name)
+add-connection (connection-name port-rid action)
+
+
+
 getter (rid):
   result <= c.ns[name]
     where deconstruct rid => (_, ns, name)

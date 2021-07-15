@@ -1,0 +1,100 @@
+# types
+rid = {
+  path
+  ns
+  name
+}
+
+thing = compound { val component }
+
+val = any
+
+component = :foreign
+
+any = :foreign
+
+string = :foreign
+path = :foreign
+ns = :foreign
+name = :foreign
+# end types
+
+# signatures
+
+def <rid
+get <rid >thing
+set <rid <val
+
+# end signatures
+
+# foreign methods
+def-component-raw <string
+def-value-raw <val
+lookup-component <path
+is leaf <path >yesno
+# end foreign methods
+
+# implementation
+def <rid
+    [ is leaf <rid.path
+
+        string ->
+	    design rule component must not exist <rid.path
+            def component raw <rid.path
+
+	_      ->
+            # path is a rid {path ns name}
+	    def path component <rid.path
+	    get component <rid.path >path component
+	    def < (rid : {path component, rid.ns, rid.name})
+
+    ]
+
+get <rid >thing
+    [ is leaf <rid.path
+        
+	yes ->
+	    design rule component name must exist <rid.path
+	    component name = lookup-component <rid.path
+            design rule namespace must exist <component name <rid.ns
+            design rule value must exist <component name <rid.ns <rid.name
+	    lookup-value <component name <rid.ns <rid.name
+
+       no   ->
+	    get <rid.path >component
+            design rule `path is a component' <component
+	    get <rid:{component ns name}
+    ]
+
+set <rid <val
+    [ is leaf <rid.path
+        
+	yes ->
+	    design rule component must exist <rid.path
+	    component name = lookup-component <rid.path
+            design rule namespace must exist <component name <rid.ns
+            design rule value must not exist <component name <rid.ns <rid.name
+	    set-value-raw <component name <rid.ns <rid.name
+
+       no   ->
+	    get <rid.path >component
+            design rule `path is a component' <component
+	    set <rid:{component ns name} <val
+    ]
+    
+
+
+# end implementation
+# design rules
+component must exist <name
+    succeeds lookup-component <name
+component must not exist <name
+    fails lookup-component <name
+value must exist <component <namespace <name
+    succeeds lookup-value <component <namespace <name
+value must not exist <component <namespace <name
+    fails lookup-value <component <namespace <name
+namespace must exist <component <namespace
+    succeeds lookup-namespace <component <namespace
+# end design rules   
+
