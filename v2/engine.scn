@@ -38,14 +38,14 @@ is leaf <path >yesno
 def <rid
     [ is leaf <rid.path
 
-        string ->
-	    design rule component must not exist <rid.path
+        yes ->
+	        design rule component must not exist <rid.path
             def component raw <rid.path
 
-	_      ->
+	no  ->
             # path is a rid {path ns name}
 	    def path component <rid.path
-	    get component <rid.path >path component
+	    get <rid.path >path component
 	    def < (rid : {path component, rid.ns, rid.name})
 
     ]
@@ -54,35 +54,34 @@ get <rid >thing
     [ is leaf <rid.path
         
 	yes ->
-	    design rule component name must exist <rid.path
+	       design rule component name must exist <rid.path
 	    component name = lookup-component <rid.path
-            design rule namespace must exist <component name <rid.ns
-            design rule value must exist <component name <rid.ns <rid.name
-	    lookup-value <component name <rid.ns <rid.name
+              design rule namespace must exist <component name <rid.ns
+              design rule value must exist <component name <rid.ns <rid.name
+	        lookup-value <component name <rid.ns <rid.name
 
        no   ->
 	    get <rid.path >component
-            design rule `path is a component' <component
-	    get <rid:{component ns name}
+              design rule `path is a component' <component
+	        set <rid:{component rid.ns rid.name} <val
     ]
-
+    
 set <rid <val
     [ is leaf <rid.path
         
 	yes ->
 	    design rule component must exist <rid.path
-	    component name = lookup-component <rid.path
-            design rule namespace must exist <component name <rid.ns
-            design rule value must not exist <component name <rid.ns <rid.name
-	    set-value-raw <component name <rid.ns <rid.name
+	      component name = lookup-component <rid.path
+                design rule namespace must exist <component name <rid.ns
+                design rule value must not exist <component name <rid.ns <rid.name
+	          set-value-raw <component name <rid.ns <rid.name
 
        no   ->
 	    get <rid.path >component
-            design rule `path is a component' <component
-	    set <rid:{component ns name} <val
+              design rule `path is a component' <component
+	        set <rid:{component ns name} <val
     ]
     
-
 
 # end implementation
 # design rules
