@@ -35,9 +35,9 @@
 
 # foreign methods
    raw get value <component <ns <name
-   raw set <component <ns <name <val
+   raw set value <component <ns <name <val
    lookup or create component at top level <name >component
-   lookup or create contained component <parent-component <ns <name <child >component
+   lookup or create contained component <parent-component <ns <name >component
    lookup component at top level <name >component
    lookup contained component <parent-component <ns <name >component
    is leaf <rid >yesno
@@ -57,7 +57,7 @@ get% <rid >thing
 set% <rid <val
     component = deep get component <rid
     design rule `value must not exist' <component <rid.ns <rid.name
-    @raw set <component <rid.ns <rid.name <val
+    @raw set value <component <rid.ns <rid.name <val
     nothing
     
 // ((("hwapp" "c" "1") "c" "2") "i" "3")
@@ -71,8 +71,7 @@ deep define path creating intermediaries <rid >component
         component
       no  ->
         deep define path creating intermediaries <rid.path >parent-component
-        child = deep get component <rid
-	component = @lookup or create contained component <parent-component <rid.ns <rid.name <child
+	component = @lookup or create contained component <parent-component <rid.ns <rid.name
 	component	      
     ]
 
@@ -84,6 +83,7 @@ deep get component <rid >component
         component
       no  ->
           design rule `must refer to component namespace' <rid.ns
+	parent component = deep get component <rid.path
 	component = @lookup contained component <parent-component <rid.ns <rid.name
 	component	      
     ]

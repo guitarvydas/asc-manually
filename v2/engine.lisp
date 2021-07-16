@@ -1,42 +1,44 @@
 (defun def% (rid)
-  (cond ((eq 'yes (is-leaf (path rid)))
-	 (design-rule-component-must-not-exist (path rid))
-	 (def-component-raw (path rid)))
-	((eq 'no (is-leaf (path rid)))
-	 (def-path-component (path rid))
-	 (let ((path-component (get% (path rid))))
-           (def% (create-rid path-component (ns rid) (name rid)))))
-	(t (panic (format nil "def %a" rid)))))
+  (deep-define-path-creating-intermediaries rid))
 
 (defun get% (rid)
-  (cond ((eq 'yes (is-leaf (path rid)))
-	 (design-rule-component-name-must-exist (path rid))
-	 (let ((component-name (lookup-component-top-level (path rid))))
-	   (design-rule-namespace-must-exist component-name (ns rid))
-	   (design-rule-value-must-exist component-name (ns rid) (name rid))
-	   (lookup-value component-name (ns rid) (name rid))))
-
-	((eq 'no (is-leaf (path rid)))
-	 (let ((component (get% (path rid))))
-	   (design-rule-path-must-be-a-component component)
-	   (get% (create-rid component (ns rid) (name rid)))))
-	
-	(t (panic (format nil "get %a" rid)))))
+  (let ((component (deep-get-component rid)))
+    (design-rule-value-must-exist component (ns rid) (name rid))
+    (raw-get-value component (ns rid) (name rid))))
 
 (defun set% (rid val)
-  (cond ((eq 'yes (is-leaf (path rid)))
-	 (design-rule-component-name-must-exist (path rid))
-	 (let ((component-name (lookup-component-top-level (path rid))))
-	   (design-rule-namespace-must-exist component-name (ns rid))
-	   (design-rule-value-must-not-exist component-name (ns rid) (name rid))
-	   (set-value-raw component-name (ns rid) (name rid) val)))
+  (let ((component (deep-get-component rid)))
+    (design-rule-value-must-not-exist component (ns rid) (name rid))
+    (raw-set-value component (ns rid) (name rid) val)))
 
-	((eq 'no (is-leaf (path rid)))
-	 (let ((component (get% (path rid))))
-	   (design-rule-path-must-be-a-component component)
-	   (set% (create-rid component (ns rid) (name rid)) val)))
+(defun deep-define-path-creating-intermediaries (rid)
+  (design-rule-must-refer-to-component-namespace rid)
+  (case (is-leaf (path rid))
+    (yes
+     (let ((name (path rid)))
+       (let ((component (lookup-or-create-component-at-top-level name)))
+	 component)))
+    (no
+     (let ((parent-component (deep-define-path-creating-intermediaries (path rid))))
+       (let ((component (lookup-or-create-contained-component parent-component (ns rid) (name rid))))
+	 component)))
+    (otherwise (panic "case failure deep-define-path-creating-intermediaries"))))
+  
 
-	(t (panic (format nil "set %a" rid)))))
+(defun deep-get-component (rid)
+  (case (is-leaf (path rid))
+    (yes
+     (let ((component (lookup-component-at-top-level (path rid))))
+       (design-rule-component-must-exist component)
+       component))
 
+    (no
+     (design-rule-must-refer-to-component-namespace (ns rid))
+     (let ((parent-component (deep-get-component (path rid))))
+       (let ((component (lookup-contained-component parent-component (ns rid) (name rid))))
+	 (design-rule-component-must-exist component)
+	 component)))
+
+    (otherwise (panic "case failure deep-get-component"))))
 
 

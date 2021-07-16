@@ -1,23 +1,10 @@
-(defun design-rule-component-must-not-exist (cname)
-  (multiple-value-bind (c success)
-      (gethash *top-level-components* cname)
-    (declare (ignore c))
-    (unless (not success)
-      (design-rule-fail (format nil "component must not exist ~a" cname)))))
+(defun design-rule-must-refer-to-component-namespace (nsname)
+    (unless (string= "c" nsname)
+      (design-rule-fail (format nil "namespace must be \"c\" (~a)" nsname))))
 
-(defun design-rule-component-name-must-exist (cname)
-  (multiple-value-bind (c success)
-      (gethash *top-level-components* cname)
-    (declare (ignore c))
-    (unless (not success)
-      (design-rule-fail (format nil "component name exist ~a" cname)))))
-
-(defun design-rule-namespace-must-exist (c ns)
-  (multiple-value-bind (namespace success)
-      (gethash ns c)
-    (declare (ignore namespace))
-    (unless success
-      (design-rule-fail (format nil "namespace must exist ~a" (list c ns))))))
+(defun design-rule-component-must-exist (c)
+  (unless (eq 'component (type-of c))
+      (design-rule-fail (format nil "component (~a) does not exist" c))))
 
 (defun design-rule-value-must-not-exist (c ns name)
   (multiple-value-bind (v success)
@@ -31,10 +18,6 @@
     (declare (ignore v))
     (unless success
       (design-rule-fail (format nil "value must exist ~a" (list c ns name))))))
-
-(defun design-rule-path-must-be-a-component (c)
-  (unless (eq (type-of c) 'component)
-    (design-rule-fail (format nil "path must be a component ~a" c))))
 
 (defun design-rule-fail (msg)
   (error msg))
