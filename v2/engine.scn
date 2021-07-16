@@ -1,99 +1,102 @@
 # types
-rid = {
-  path
-  ns
-  name
-}
+  rid = {
+    path
+    ns
+    name
+  }
 
-thing = compound { val component }
+  thing = compound { val component }
 
-val = any
+  val = any
 
-component = :foreign
+  component = :foreign
+  parent-component = component
 
-any = :foreign
+  any = :foreign
 
-string = :foreign
-path = :foreign
-ns = :foreign
-name = :foreign
+  string = :foreign
+  path = :foreign
+  ns = :foreign
+  name = :foreign
+
+  yesno = 'yes' | 'no'
+  
 # end types
 
 # signatures
 
-def <rid
-get <rid >thing
-set <rid <val
+  def% <rid
+  get% <rid >thing
+  set% <rid <val
+  deep define path creating intermediaries <rid >component
+  deep get component <rid >component
 
 # end signatures
 
 # foreign methods
-def-component-raw <string
-def-value-raw <val
-lookup-component <path
-is leaf <path >yesno
+   raw get value <component <ns <name
+   raw set <component <ns <name <val
+   lookup or create component at top level <name >component
+   lookup or create contained component <parent-component <ns <name <child >component
+   lookup component at top level <name >component
+   lookup contained component <parent-component <ns <name >component
+   is leaf <rid >yesno
 # end foreign methods
 
 # implementation
-def <rid
-    [ is leaf <rid.path
+def% <rid
+    component = deep define path creating intermediaries <rid
+    nothing
 
-        yes ->
-	        design rule component must not exist <rid.path
-            def component raw <rid.path
-
-	no  ->
-            # path is a rid {path ns name}
-	    def path component <rid.path
-	    get <rid.path >path component
-	    def < (rid : {path component, rid.ns, rid.name})
-
-    ]
-
-get <rid >thing
-    [ is leaf <rid.path
-        
-	yes ->
-	       design rule component name must exist <rid.path
-	    component name = lookup-component <rid.path
-              design rule namespace must exist <component name <rid.ns
-              design rule value must exist <component name <rid.ns <rid.name
-	        lookup-value <component name <rid.ns <rid.name
-
-       no   ->
-	    get <rid.path >component
-              design rule `path is a component' <component
-	        set <rid:{component rid.ns rid.name} <val
-    ]
+get% <rid >thing
+    component = deep get component <rid
+    design rule `value must exist' <component <rid.ns <rid.name
+    val = @raw get value <component <rid.ns <rid.name
+    val
     
-set <rid <val
-    [ is leaf <rid.path
-        
-	yes ->
-	    design rule component must exist <rid.path
-	      component name = lookup-component <rid.path
-                design rule namespace must exist <component name <rid.ns
-                design rule value must not exist <component name <rid.ns <rid.name
-	          set-value-raw <component name <rid.ns <rid.name
-
-       no   ->
-	    get <rid.path >component
-              design rule `path is a component' <component
-	        set <rid:{component ns name} <val
-    ]
+set% <rid <val
+    component = deep get component <rid
+    design rule `value must not exist' <component <rid.ns <rid.name
+    @raw set <component <rid.ns <rid.name <val
+    nothing
     
+// ((("hwapp" "c" "1") "c" "2") "i" "3")
+//consider only path: (("hwapp" "c" "1") "c" "2")
+deep define path creating intermediaries <rid >component
+        design rule `must refer to component namespace' <rid.ns
+    [ @is leaf <rid.path
+      yes -> 
+        cname = rid.path
+        component = @lookup or create component at top level <cname
+        component
+      no  ->
+        deep define path creating intermediaries <rid.path >parent-component
+        child = deep get component <rid
+	component = @lookup or create contained component <parent-component <rid.ns <rid.name <child
+	component	      
+    ]
+
+deep get component <rid >component
+    [ @is leaf <rid.path
+      yes -> 
+        component = @lookup component at top level <rid.path
+	design rule `component must exist' <component
+        component
+      no  ->
+          design rule `must refer to component namespace' <rid.ns
+	component = @lookup contained component <parent-component <rid.ns <rid.name
+	component	      
+    ]
 
 # end implementation
 # design rules
-component must exist <name
-    succeeds lookup-component <name
-component must not exist <name
-    fails lookup-component <name
+must refer to component namespace <str
+    succeeds str === "c"
+component must exist <component
+    succeeds lookup-component <component
 value must exist <component <namespace <name
-    succeeds lookup-value <component <namespace <name
+    fails lookup-value <component <namespace <name
 value must not exist <component <namespace <name
     fails lookup-value <component <namespace <name
-namespace must exist <component <namespace
-    succeeds lookup-namespace <component <namespace
 # end design rules   
 
