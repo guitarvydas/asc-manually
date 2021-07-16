@@ -12,7 +12,7 @@
     (raw-set-value component (ns rid) (name rid) val)))
 
 (defun deep-define-path-creating-intermediaries (rid)
-  (design-rule-must-refer-to-component-namespace rid)
+  (design-rule-must-refer-to-component-namespace (ns rid))
   (case (is-leaf (path rid))
     (yes
      (let ((name (path rid)))

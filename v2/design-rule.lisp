@@ -1,5 +1,5 @@
 (defun design-rule-must-refer-to-component-namespace (nsname)
-    (unless (string= "c" nsname)
+    (unless (and (stringp nsname) (string= "c" nsname))
       (design-rule-fail (format nil "namespace must be \"c\" (~a)" nsname))))
 
 (defun design-rule-component-must-exist (c)
