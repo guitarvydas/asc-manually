@@ -9,5 +9,6 @@
 				     (:file "aux")
 				     (:file "design-rule")
 				     (:file "engine")
+				     (:file "test")
 				     ))))
 

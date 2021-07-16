@@ -1,1 +1,10 @@
-(def% "hwapp" "c" "inner")
+(defun test ()
+  (setf *top-level-components* (make-hash-table :test 'equal))
+  (def-component% (create-rid "hwapp" "c" "inner"))
+  (set% (create-rid "hwapp" "n" "var") 5)
+  (def-component% (create-rid "hwapp" "i" "in"))
+  (def-component% (create-rid "hwapp" "o" "out"))
+  (def-component% (create-rid "hwapp" "c" "inner"))
+  (def-input% (create-rid (create-rid "hwapp" "c" "inner") "i" "a"))
+  (def-output% (create-rid (create-rid "hwapp" "c" "inner") "o" "b")))
+

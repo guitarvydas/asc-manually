@@ -41,13 +41,30 @@
    lookup component at top level <name >component
    lookup contained component <parent-component <ns <name >component
    is leaf <rid >yesno
+   create-raw-input <component <ns <name
+   create-raw-output <component <ns <name
+   resolve-component-raw <path <ns <name
 # end foreign methods
 
 # implementation
-def% <rid
+def-component% <rid
     component = deep define path creating intermediaries <rid
+    @raw set value <rid <nil
     nothing
 
+def-input% <rid
+      design rule `must refer to input namespace' <rid.ns
+    component = deep get component <rid
+      design rule `input must not already exist' <component <rid.ns <rid.name
+    create-raw-input <component <rid.ns <rid.name
+    
+def-output% <rid
+      design rule `must refer to output namespace' <rid.ns
+    component = deep get component <rid
+      design rule `output must not already exist' <component <rid.ns <rid.name
+    create-raw-output <component <rid.ns <rid.name
+    
+    
 get% <rid >thing
     component = deep get component <rid
     design rule `value must exist' <component <rid.ns <rid.name
@@ -63,13 +80,13 @@ set% <rid <val
 // ((("hwapp" "c" "1") "c" "2") "i" "3")
 //consider only path: (("hwapp" "c" "1") "c" "2")
 deep define path creating intermediaries <rid >component
-        design rule `must refer to component namespace' <rid.ns
     [ @is leaf <rid.path
       yes -> 
         cname = rid.path
         component = @lookup or create component at top level <cname
         component
       no  ->
+          design rule `must refer to component namespace' <rid.ns
         deep define path creating intermediaries <rid.path >parent-component
 	component = @lookup or create contained component <parent-component <rid.ns <rid.name
 	component	      
@@ -82,21 +99,30 @@ deep get component <rid >component
 	design rule `component must exist' <component
         component
       no  ->
-          design rule `must refer to component namespace' <rid.ns
-	parent component = deep get component <rid.path
-	component = @lookup contained component <parent-component <rid.ns <rid.name
-	component	      
+        path = deep get component <rid.path 
+	  design rule `must refer to component namespace' <rid.ns
+	  design rule `value must exist' <path <rid.ns <rid.name
+	component = @resolve-component-raw <path <rid.ns <rid.name
+	  design rule `must be a component' <component
+        component
     ]
 
 # end implementation
 # design rules
 must refer to component namespace <str
     succeeds str === "c"
+must refer to input namespace <str
+    succeeds str === "i"
+must refer to output namespace <str
+    succeeds str === "o"
 component must exist <component
     succeeds lookup-component <component
 value must exist <component <namespace <name
     fails lookup-value <component <namespace <name
 value must not exist <component <namespace <name
     fails lookup-value <component <namespace <name
+
+must be a component <component
+
 # end design rules   
 

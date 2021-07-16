@@ -1,5 +1,18 @@
-(defun def% (rid)
-  (deep-define-path-creating-intermediaries rid))
+(defun def-component% (rid)
+  (let ((component (deep-define-path-creating-intermediaries rid)))
+    component))
+
+(defun def-input% (rid)
+  (design-rule-must-refer-to-input-namespace (ns rid))
+  (let ((component (deep-get-component rid)))
+    (design-rule-input-must-not-already-exist (ns rid) (name rid))
+    (create-raw-input component (ns rid) (name rid))))
+
+(defun def-output% (rid)
+  (design-rule-must-refer-to-output-namespace (ns rid))
+  (let ((component (deep-get-component rid)))
+    (design-rule-output-must-not-already-exist (ns rid) (name rid))
+    (create-raw-output component (ns rid) (name rid))))
 
 (defun get% (rid)
   (let ((component (deep-get-component rid)))
@@ -12,13 +25,13 @@
     (raw-set-value component (ns rid) (name rid) val)))
 
 (defun deep-define-path-creating-intermediaries (rid)
-  (design-rule-must-refer-to-component-namespace (ns rid))
   (case (is-leaf (path rid))
     (yes
      (let ((name (path rid)))
        (let ((component (lookup-or-create-component-at-top-level name)))
 	 component)))
     (no
+     (design-rule-must-refer-to-component-namespace (ns rid))
      (let ((parent-component (deep-define-path-creating-intermediaries (path rid))))
        (let ((component (lookup-or-create-contained-component parent-component (ns rid) (name rid))))
 	 component)))
@@ -33,12 +46,13 @@
        component))
 
     (no
-     (design-rule-must-refer-to-component-namespace (ns rid))
-     (let ((parent-component (deep-get-component (path rid))))
-       (let ((component (lookup-contained-component parent-component (ns rid) (name rid))))
-	 (design-rule-component-must-exist component)
+     (let ((path (deep-get-component (path rid))))
+       (design-rule-must-refer-to-component-namespace (ns rid))
+       (design-rule-value-must-exist path (ns rid) (name rid))
+       (let ((component (reolve-component-raw path (ns rid) (name rid))))
+	 (design-rule-must-be-a-component component)
 	 component)))
 
-    (otherwise (panic "case failure deep-get-component"))))
+    (otherwise (panic (format nil "case failure deep-get-component" rid)))))
 
 
