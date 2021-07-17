@@ -1,0 +1,120 @@
+# types
+  rid = {
+    path
+    ns
+    name
+  }
+
+  thing = compound { val component }
+
+  val = any
+
+  component = :foreign
+  parent-component = component
+
+  any = :foreign
+
+  string = :foreign
+  path = :foreign
+  ns = :foreign
+  name = :foreign
+
+  yesno = 'yes' | 'no'
+  
+# end types
+
+# signatures
+
+// RID means Relative ID
+def-component% <rid
+def-input% <rid
+def-output% <rid
+get% <rid
+set% <rid <val
+
+// ea means Effective Address - the resolved path part of a RID
+ea% <path
+def-ea% <path
+
+# end signatures
+
+# foreign functions
+// foreign functions are defined elsewhere (in the base language)
+// synchronous and always return a value
+is lead <rid >yesno
+lookup component at top level <path <ns <name >component
+lookup contained component <path <ns <name >component
+lookup or create component at top level <path <ns <name >component
+lookup or create contained component <path <ns <name >component
+create-input-pin-raw <path <ns <name
+create-output-pin-raw <path <ns <name
+# end foreign functions
+
+# implementation
+
+%ea <path
+    design rule `must use component namespace' <path.ns
+ leaf <path
+    yes -> component = @lookup component at top level <path.path <path.ns <path.name
+    no  ->
+      outer = %ea <path.path
+        design rule `value must exist' <outer <path.ns <path.name
+      component = @lookup contained component <outer <path.ns <path.name
+  ]
+  component
+
+
+def-ea% <path
+  [ @is leaf <path
+    yes -> component = @lookup or create component at top level <path.path <path.ns <path.name
+    no  ->
+      outer = %ea <path.path
+      component = @lookup or create contained component <outer <path.ns <path.name
+  ]
+  component
+
+def-component% <rid
+  outer = def-ea% <rid.path
+    design rule `must use component namespace' <path
+  [ @is leaf <path
+    yes -> component = @lookup or create component at top level <path.path <path.ns <path.name
+    no  -> component = @lookup or create contained component <path.path <path.ns <path.name
+  ]
+  component
+
+def-input% <rid
+  outer = ea% <rid.path
+    design rule `must use input namespace' <path
+    design rule `input pin must not be defined more than once` <outer <rid.ns <rid.name
+  @create-input-pin-raw <outer <rid.ns <rid.name
+  nothing   
+
+def-output% <rid
+  outer = ea% <rid.path
+    design rule `must use output namespace' <path
+    design rule `output pin must not be defined more than once` <outer <rid.ns <rid.name
+  @create-output-pin-raw <out <rid.ns <rid.name
+  nothing   
+
+get% <rid
+  parent = ea% <rid.path
+    design rule `must be a valid namespace' <rid
+    design rule `value must exist' <parent <rid.ns <rid.name
+  v = @raw-get <parent <rid.ns <rid.name
+  v
+   
+set% <rid <val
+  parent = ea% <rid.path
+    design rule `must be a valid namespace' <rid
+  @raw-set <parent <rid.ns <rid.name <v
+  nothing   
+
+# end implementation
+
+# design rules
+`must use component namespace' <path
+`input pin must not be defined more than once` <path <ns <name
+`output pin must not be defined more than once` <path <ns <name
+`must be a valid namespace' <rid
+`value must exist' <path <ns <name
+# end design rules

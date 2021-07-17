@@ -11,6 +11,7 @@
 
   component = :foreign
   parent-component = component
+  child = component
 
   any = :foreign
 
@@ -24,62 +25,120 @@
 # end types
 
 # signatures
+
+// RID means Relative ID
+def-component% <rid
+def-input% <rid
+def-output% <rid
+get% <rid >val
+set% <rid <val
+
+# layer effective address
+// ea means Effective Address - the resolved path part of a RID
+ea% <path >component
+def-ea% <path >component
+# end layer effective address
+
 # end signatures
 
-# foreign methods
-# end foreign methods
+# foreign functions
+// foreign functions are defined elsewhere (in the base language)
+// synchronous and always return a value
+is leaf <rid >yesno
+lookup component at top level <path <ns <name >component
+lookup contained component <path <ns <name >component
+lookup or create component at top level <path <ns <name >component
+lookup or create contained component <path <ns <name >component
+create input pin raw <path <ns <name
+create output pin raw <path <ns <name
+raw get <parent <rid.ns <rid.name
+raw set <parent <rid.ns <rid.name <v
+# end foreign functions
 
 # implementation
 
 def-top-level-component% <name
-      design rule top level component must not exist <name
-    @create component at top level <name
-    nothing
+  component = @lookup or create component at top level <name
+  component
 
 def-contained-component% <rid
-    component = deep define path creating intermediaries <rid
-    nothing
+  outer = def-ea% <rid.path
+    design rule `must use component namespace' <rid
+  component = @lookup or create contained component <path.path <path.ns <path.name
+  component
 
-// (("hwapp" "c" "inner") "i" "a")
 def-input% <rid
-    component = get rid.path
-      design rule must be a component <component
-      ns = rid.ns
-def-output% <rid
+  outer = ea% <rid.path
+    design rule `must use input namespace' <rid
+    design rule `input pin must not be defined more than once` <outer <rid.ns <rid.name
+  @create-input-pin-raw <outer <rid.ns <rid.name
+  nothing   
 
-get% <rid >thing
-    component = deep get component <rid
-    design rule `value must exist' <component <rid.ns <rid.name
-    val = @raw get value <component <rid.ns <rid.name
-    val
-    
+def-output% <rid
+  outer = ea% <rid.path
+    design rule `must use output namespace' <path
+    design rule `output pin must not be defined more than once` <outer <rid.ns <rid.name
+  @create-output-pin-raw <out <rid.ns <rid.name
+  nothing   
+
+get% <rid >val
+  parent = ea% <rid.path
+    design rule `must be a valid namespace' <rid
+    design rule `value must exist' <parent <rid.ns <rid.name
+  v = @raw-get <parent <rid.ns <rid.name
+  v
+   
 set% <rid <val
-    component = deep get component <rid
-    design rule `value must not exist' <component <rid.ns <rid.name
-    @raw set value <component <rid.ns <rid.name <val
-    nothing
-    
-deep define path creating intermediaries <rid >component
-deep get component <rid >component
+  parent = ea% <rid.path
+    design rule `must be a valid namespace' <rid
+    design rule `value must not exist' <parent <rid.ns <rid.name
+  @raw-set <parent <rid.ns <rid.name <v
+  nothing   
+
+add-connection% <rid <rid1 <rid1
+  parent = ea% <rid.path
+    design rule `must use connection namespace' <rid
+    design rule `must use i/o namespace' <rid1
+    design rule `must use i/o namespace' <rid2
+  @raw-add-connection <rid.name <parent <rid1 <rid2
+
+# layer `effective address'
+ea% <path >component
+    design rule `must use component namespace' <path.ns
+  [ @is leaf <path
+    yes -> component = @lookup component at top level <path
+    no  ->
+      outer = ea% <path.path
+        design rule `must be a component' <outer
+        design rule `value must exist' <outer <path.ns <path.name
+      component = @lookup contained component <outer <path.ns <path.name
+  ]
+  component
+
+
+def-ea% <path >component
+  [ @is leaf <path.path
+    yes -> component = @lookup or create component at top level <path.path <path.ns <path.name
+    no  ->
+      outer = ea% <path.path
+      component = @lookup or create contained component <outer <path.ns <path.name
+  ]
+  component
+# end layer `effective address'
+
 
 # end implementation
+
 # design rules
-must refer to component namespace <str
-    succeeds str === "c"
-must refer to input namespace <str
-    succeeds str === "i"
-must refer to output namespace <str
-    succeeds str === "o"
-component must exist <component
-    succeeds lookup-component <component
-value must exist <component <namespace <name
-    fails lookup-value <component <namespace <name
-value must not exist <component <namespace <name
-    fails lookup-value <component <namespace <name
-
-must be a component <component
-
-toplevel component must not exist <name
-
-# end design rules   
-
+`must use component namespace' <rid
+`must use input namespace' <rid
+`must use output namespace' <rid
+`input pin must not be defined more than once` <component <ns <name
+`output pin must not be defined more than once` <component <ns <name
+`must be a valid namespace' <rid
+`value must exist' <path <ns <name
+`value must not exist' <path <ns <name
+`must be a component' <any
+`must use connection namespace' <rid
+`must use i/o namespace' <rid
+# end design rules
