@@ -24,47 +24,29 @@
 # end types
 
 # signatures
-
-  def% <rid
-  get% <rid >thing
-  set% <rid <val
-  deep define path creating intermediaries <rid >component
-  deep get component <rid >component
-
 # end signatures
 
 # foreign methods
-   raw get value <component <ns <name
-   raw set value <component <ns <name <val
-   lookup or create component at top level <name >component
-   lookup or create contained component <parent-component <ns <name >component
-   lookup component at top level <name >component
-   lookup contained component <parent-component <ns <name >component
-   is leaf <rid >yesno
-   create-raw-input <component <ns <name
-   create-raw-output <component <ns <name
-   resolve-component-raw <path <ns <name
 # end foreign methods
 
 # implementation
-def-component% <rid
-    component = deep define path creating intermediaries <rid
-    @raw set value <rid <nil
+
+def-top-level-component% <name
+      design rule top level component must not exist <name
+    @create component at top level <name
     nothing
 
+def-contained-component% <rid
+    component = deep define path creating intermediaries <rid
+    nothing
+
+// (("hwapp" "c" "inner") "i" "a")
 def-input% <rid
-      design rule `must refer to input namespace' <rid.ns
-    component = deep get component <rid
-      design rule `input must not already exist' <component <rid.ns <rid.name
-    create-raw-input <component <rid.ns <rid.name
-    
+    component = get rid.path
+      design rule must be a component <component
+      ns = rid.ns
 def-output% <rid
-      design rule `must refer to output namespace' <rid.ns
-    component = deep get component <rid
-      design rule `output must not already exist' <component <rid.ns <rid.name
-    create-raw-output <component <rid.ns <rid.name
-    
-    
+
 get% <rid >thing
     component = deep get component <rid
     design rule `value must exist' <component <rid.ns <rid.name
@@ -77,35 +59,8 @@ set% <rid <val
     @raw set value <component <rid.ns <rid.name <val
     nothing
     
-// ((("hwapp" "c" "1") "c" "2") "i" "3")
-//consider only path: (("hwapp" "c" "1") "c" "2")
 deep define path creating intermediaries <rid >component
-    [ @is leaf <rid.path
-      yes -> 
-        cname = rid.path
-        component = @lookup or create component at top level <cname
-        component
-      no  ->
-          design rule `must refer to component namespace' <rid.ns
-        deep define path creating intermediaries <rid.path >parent-component
-	component = @lookup or create contained component <parent-component <rid.ns <rid.name
-	component	      
-    ]
-
 deep get component <rid >component
-    [ @is leaf <rid.path
-      yes -> 
-        component = @lookup component at top level <rid.path
-	design rule `component must exist' <component
-        component
-      no  ->
-        path = deep get component <rid.path 
-	  design rule `must refer to component namespace' <rid.ns
-	  design rule `value must exist' <path <rid.ns <rid.name
-	component = @resolve-component-raw <path <rid.ns <rid.name
-	  design rule `must be a component' <component
-        component
-    ]
 
 # end implementation
 # design rules
@@ -123,6 +78,8 @@ value must not exist <component <namespace <name
     fails lookup-value <component <namespace <name
 
 must be a component <component
+
+toplevel component must not exist <name
 
 # end design rules   
 

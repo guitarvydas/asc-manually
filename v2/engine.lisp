@@ -4,14 +4,14 @@
 
 (defun def-input% (rid)
   (design-rule-must-refer-to-input-namespace (ns rid))
-  (let ((component (deep-get-component rid)))
-    (design-rule-input-must-not-already-exist (ns rid) (name rid))
+  (let ((component (deep-get-component (path rid))))
+    (design-rule-input-must-not-already-exist component (ns rid) (name rid))
     (create-raw-input component (ns rid) (name rid))))
 
 (defun def-output% (rid)
   (design-rule-must-refer-to-output-namespace (ns rid))
-  (let ((component (deep-get-component rid)))
-    (design-rule-output-must-not-already-exist (ns rid) (name rid))
+  (let ((component (deep-get-component (path rid))))
+    (design-rule-output-must-not-already-exist component (ns rid) (name rid))
     (create-raw-output component (ns rid) (name rid))))
 
 (defun get% (rid)
@@ -49,7 +49,7 @@
      (let ((path (deep-get-component (path rid))))
        (design-rule-must-refer-to-component-namespace (ns rid))
        (design-rule-value-must-exist path (ns rid) (name rid))
-       (let ((component (reolve-component-raw path (ns rid) (name rid))))
+       (let ((component (resolve-component-raw path (ns rid) (name rid))))
 	 (design-rule-must-be-a-component component)
 	 component)))
 

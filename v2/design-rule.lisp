@@ -47,5 +47,11 @@
   (unless (eq 'component (type-of x))
     (design-rule-fail (format nil "must be a component ~a" x))))
 
+(defun design-rule-top-level-component-must-not-exist (name)
+  (multiple-value-bind (c success)
+      (gethash name *top-level-components*)
+    (unless success
+      (design-rule-fail (format nil "top level component must not exist ~a" name)))))
+
 (defun design-rule-fail (msg)
   (error msg))
